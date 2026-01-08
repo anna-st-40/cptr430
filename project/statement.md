@@ -63,6 +63,7 @@ Projects that will result in useful tools for the university or computer science
 - Project work officially begins at the start of the 3rd week of the course (Mon Jan 19th).
 - You should have a clearly defined problem statement and initial system idea, in the form of a proposal.
 - You're encouraged to discuss your project ideas with the instructor before submitting a proposal.
+- The proposal should include a week-by-week development plan.
 
 ---
 
