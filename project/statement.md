@@ -14,6 +14,7 @@ This project emphasizes **building AI applications**, not training machine learn
 - Ollama Server Via Python API, Server URL: http://ollama.cs.wallawalla.edu:11434
 - Ollama Python library docs: https://github.com/ollama/ollama-python
 - Ollama API documentation: https://github.com/ollama/ollama/blob/main/docs/api.md
+- Z3 https://github.com/Z3Prover/z3 
 
 With instructor permission, you can download to and use any models on the CS Ollama server that are at most `14b` (equivalent to about 9GB).
 
@@ -35,11 +36,11 @@ By the end of the project, you should be able to:
 
 ## Project Scope and Constraints
 
-Your project **must** meet the following requirements:
+Your project **must** meet the following requirements. Note that you don't have to use an LLM (or any model at all), but it is encouraged:
 
 - Focus on **AI system design and integration**
 - Use **existing models or APIs** (no training models from scratch)
-- Incorporate **external knowledge or structured information**, such as:
+- Incorporate **external knowledge or structured information**, such as (but not limited to):
   - Retrieval-Augmented Generation (RAG)
   - Vector databases
   - Rules, tools, planners, or APIs

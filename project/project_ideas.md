@@ -22,8 +22,8 @@ A chatbot that answers questions for a specific course (e.g., AI, OS, Networks) 
 - Prompt engineering  
 
 **Implementation guidance**
-- Use a hosted LLM (OpenAI, Anthropic, or Ollama).
-- Ingest PDFs/Markdown → chunk → embed → store in a vector DB (FAISS, Chroma, Weaviate).
+- Use a hosted or local LLM (Ollama).
+- Ingest PDFs/Markdown → chunk → embed → store in a vector DB (Chroma).
 - Implement Retrieval-Augmented Generation (RAG) with citations.
 - Add guardrails for unknown or missing information.
 - Evaluate using a predefined Q&A benchmark.
