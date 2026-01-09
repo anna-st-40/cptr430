@@ -31,7 +31,7 @@ I suggest running the following commands from your base user directory:
 mkdir cs430 
 cd cs430 
 uv init 
-uv add ollama 
+uv sync
 source .venv/bin/activate
 touch agent.ipynb
 ```
