@@ -24,8 +24,6 @@ This lab provides hands-on experience with the fundamental concepts of intellige
 
 This lab is designed to be run in a Jupyter notebook environment, because the examples build progressively.
 
-Create a file such as `agent.ipynb` and paste the code for each exercise in a new code cell.
-
 I suggest running the following commands from your base user directory:
 
 
@@ -38,8 +36,13 @@ source .venv/bin/activate
 touch agent.ipynb
 ```
 
+The last command will create a file such as `agent.ipynb`. 
+
 Select the virtual environment created by ollama (`cs430`) as the kernel for your Jupyter notebook.
 
+Paste the code for each exercise in a new code cell.
+
+Make sure to record your answers to *all* reflections.
 
 ---
 
@@ -658,7 +661,7 @@ print(f"\n Best Performance: {best_agent[0]} (Score: {best_agent[1][0]})")
 
 ## Submission Instructions
 
-Create a new **public** Github Repository called `cs450`, upload your local `cs450` folder there including the `agent.ipynb` file from this lab and:
+Create a new **public** Github Repository called `cs430`, upload your local `cs430` folder there including the `agent.ipynb` file from this lab and:
 
 A Markdown document called `reflections.md` containing this header
 
