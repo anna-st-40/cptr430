@@ -23,6 +23,20 @@ source .venv/bin/activate
 touch agent.ipynb
 ```
 
+---
+
+#### uv
+
+I highly recommend uv (https://docs.astral.sh/uv/). It (according to their docs):
+
+- 🚀 Is a single tool to replace pip, pip-tools, pipx, poetry, pyenv, twine, virtualenv, and more.
+- ⚡️ Is 10-100x faster than pip.
+- 🗂️ Provides comprehensive project management, with a universal lockfile.
+- ❇️ Runs scripts, with support for inline dependency metadata.
+- 🐍 Installs and manages Python versions.
+
+---
+
 The last command will create a file such as `agent.ipynb`. 
 
 Select the virtual environment created by ollama (`cs430`) as the kernel for your Jupyter notebook.
@@ -30,6 +44,8 @@ Select the virtual environment created by ollama (`cs430`) as the kernel for you
 Paste the code for each exercise in a new code cell.
 
 Make sure to record your answers to *all* reflections.
+
+If you can't use Jupyter Notebook for whatever reason, just build up a regular Python program, and ignore output from earlier exercises.
 
 ---
 
