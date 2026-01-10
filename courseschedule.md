@@ -11,10 +11,10 @@ The schedule is subject to change at the professional judgement of the instructo
 | ---- | ---------- | ------------------------------------------------ | ------------------ |
 | 1    | Mon Jan 5  | Course overview; What is AI? Intelligent agents  | Ch 1               |
 |      | Wed Jan 7  | Problem formulation; agent environments          | Ch 2               |
-|      | Thu Jan 8  | Uninformed search                                | Ch 3               |
-|      | Fri Jan 9  | Informed search                                  | Ch 4               |
-| 2    | Mon Jan 12 | Advanced informed search; heuristics             | Ch 4               |
-|      | Wed Jan 14 | Adversarial search; game playing                 | Ch 5               |
+|      | Thu Jan 8  | Intelligent Agents                               | —                  |
+|      | Fri Jan 9  | Intelligent Agents Lab                           | —                  |
+| 2    | Mon Jan 12 | Intelligent Agents Lab Pt2                       | —                  |
+|      | Wed Jan 14 | Search and Problem-Solving                       | Ch 3               |
 |      | Thu Jan 15 | Search wrap-up; discussion & examples            | Ch 3–5             |
 |      | Fri Jan 16 | Mini project / problem-solving lab               | —                  |
 | 3    | Mon Jan 19 | Project Kickoff                                  | —                  |
