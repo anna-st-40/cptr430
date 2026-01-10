@@ -3,22 +3,9 @@
 
 ---
 
-## Learning Objectives
-
-By the end of this lab, you will be able to:
-
-1. **Identify** the key components of an agent (sensors, actuators, percepts, actions)
-2. **Distinguish** between agent functions and agent programs
-3. **Explain** the concept of rationality and how it differs from perfection
-4. **Classify** environments using the PEAS framework and environment properties
-5. **Compare** the four basic agent architectures and their appropriate use cases
-6. **Analyze** how environment properties influence agent design decisions
-
----
-
 ## Lab Overview
 
-This lab provides hands-on experience with the fundamental concepts of intelligent agents through a series of runnable Python examples. Each exercise demonstrates key ideas from Chapter 2 using the classic vacuum cleaner world as our domain.
+This lab provides hands-on experience with the fundamental concepts of various types of intelligent agents and environments through a series of runnable Python examples. Each exercise demonstrates key ideas from Chapter 2 using the classic vacuum cleaner world as our domain.
 
 **Setup:** Ensure you have Python 3.10+ installed. No external libraries required.
 
