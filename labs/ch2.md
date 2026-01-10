@@ -9,8 +9,6 @@ This lab provides hands-on experience with the fundamental concepts of various t
 
 **Setup:** Ensure you have Python 3.10+ installed. No external libraries required.
 
-This lab is designed to be run in a Jupyter notebook environment, because the examples build progressively.
-
 I suggest running the following commands from your base user directory:
 
 
@@ -22,6 +20,8 @@ uv sync
 source .venv/bin/activate
 touch agent.ipynb
 ```
+
+The last command will create a file such as `agent.ipynb`. 
 
 ---
 
@@ -37,15 +37,19 @@ I highly recommend uv (https://docs.astral.sh/uv/). It (according to their docs)
 
 ---
 
-The last command will create a file such as `agent.ipynb`. 
+#### Jupyter Notebook
 
-Select the virtual environment created by ollama (`cs430`) as the kernel for your Jupyter notebook.
+This lab is designed to be run in a Jupyter notebook environment, because the examples build progressively.
+
+Select the virtual environment created by `uv`` (`cs430`) as the kernel for your Jupyter notebook.
 
 Paste the code for each exercise in a new code cell.
 
-Make sure to record your answers to *all* reflections.
-
 If you can't use Jupyter Notebook for whatever reason, just build up a regular Python program, and ignore output from earlier exercises.
+
+#### Submission 
+
+Make sure to record your answers to *all* reflections to submit at the end of the lab!
 
 ---
 
