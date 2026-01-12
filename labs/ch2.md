@@ -672,7 +672,7 @@ Create a new **public** Github Repository called `cs430`, upload your local `cs4
 
 A Markdown document called `reflections.md` containing this header
 
-Create `lab7_results.md`:
+Create `lab_ch2_results.md`:
 
 ```markdown
 # Names: Your names here
