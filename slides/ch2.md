@@ -279,30 +279,6 @@ Task environment = problem specification for intelligent agent
 
 ---
 
-## PEAS Example: Part-Picking Robot
-
-**Performance**: Percentage correct parts, speed
-
-**Environment**: Conveyor belt, parts, bins
-
-**Actuators**: Jointed arm, gripper
-
-**Sensors**: Camera, joint angle sensors
-
----
-
-## PEAS Example: Interactive Tutor
-
-**Performance**: Student test scores, engagement
-
-**Environment**: Student, curriculum
-
-**Actuators**: Screen display (exercises, suggestions, corrections)
-
-**Sensors**: Keyboard input, student responses
-
----
-
 ## Properties of Task Environments
 
 We can classify environments along several dimensions:
@@ -913,52 +889,6 @@ Most real environments require learning
 
 **Disadvantage**: More complex reasoning
 
-
----
-
-## Chapter 2 Summary: Agents
-
-**Agent**: Perceives and acts to maximize performance measure
-
-**Rational Agent**: Chooses actions to maximize expected performance given percepts and knowledge
-
-**Key**: Rationality ≠ omniscience or perfection
-
----
-
-## Chapter 2 Summary: Environments
-
-**Task Environment (PEAS)**:
-- Performance, Environment, Actuators, Sensors
-
-**Environment Properties**:
-- Observable, deterministic, episodic, static, discrete
-
-**Complexity**: Real environments often partially observable, stochastic, sequential, dynamic
-
----
-
-## Chapter 2 Summary: Agent Types
-
-**Four Basic Types**:
-1. Simple reflex (current percept)
-2. Model-based (internal state)
-3. Goal-based (explicit goals)
-4. Utility-based (preferences)
-
-**Learning Agents**: Can improve over time
-
----
-
-## Chapter 2 Summary: Design Principles
-
-**Good agent design**:
-- Match architecture to environment
-- Include learning when possible!
-- Balance exploration and exploitation
-- Choose appropriate state representation
-- Consider autonomy vs. prior knowledge
-
 ---
 
 ## Key Takeaways
@@ -968,19 +898,6 @@ Most real environments require learning
 3. Environment properties determine agent complexity
 4. Learning enables adaptation to unknown environments
 5. Utility functions formalize preferences and trade-offs
-
----
-
-## Looking Ahead
-
-**Next chapters** build on agent framework:
-- Search (problem-solving agents)
-- Logic (knowledge-based agents)
-- Planning (goal-based agents)
-- Learning (improving performance)
-- Decision theory (utility-based agents)
-
-All share the agent perspective!
 
 ---
 
