@@ -1,3 +1,4 @@
-.python_version
+.python-version
 pyproject.toml
 main.py
+.DS_Store
