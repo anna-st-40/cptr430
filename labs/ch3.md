@@ -976,7 +976,7 @@ print(f"Manhattan Distance expanded: {stats_manhattan[0]} nodes")
 
 **Question 24:** Which heuristic dominates the other? Use the formal definition of heuristic dominance to justify your answer.
 
-**Question 25:** Compare the nodes expanded using Manhattan distance versus Euclidean distance. Which is a better heuristic for grid movement, and why? Consider what types of moves are allowed in the grid world.
+**Question 25:** Even though Manhattan distance is more informed, it still does not capture the true cost perfectly. Describe one limitation of Manhattan distance in the 8-puzzle and suggest what kind of information a better heuristic might include.
 
 ---
 
