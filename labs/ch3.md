@@ -835,6 +835,151 @@ print("Both are admissible (never overestimate true cost)")
 
 ---
 
+## Exercise 8: Comparing 8-Puzzle Heuristics  
+**Tiles Out of Place vs. Manhattan Distance**
+
+### Description
+This exercise compares two classic heuristics for the 8-puzzle:
+
+- **Tiles Out of Place (Misplaced Tiles)**: Counts how many tiles are not in their goal position.
+- **Manhattan Distance**: Sums the horizontal and vertical distances of each tile from its goal position.
+
+Both heuristics are **admissible**, but they differ in how much information they provide to guide A* search. You will observe how heuristic quality affects efficiency while preserving optimality.
+
+### Key Concepts
+- **Admissible Heuristic**: Never overestimates the true cost to the goal
+- **Heuristic Accuracy**: More informed heuristics reduce node expansions
+- **Heuristic Dominance**: One heuristic dominates another if it always gives equal or higher values while remaining admissible
+- **A* Search Behavior**: Guided by f(n) = g(n) + h(n)
+
+### Task
+
+Run the code below to compare A* using both heuristics on the same 8-puzzle problem.
+
+Pay attention to:
+
+- Number of nodes expanded
+- Maximum frontier size
+- Solution path length
+- Whether both heuristics find the same optimal solution
+
+```python
+import heapq
+
+goal = (1, 2, 3,
+        4, 5, 6,
+        7, 8, 0)
+
+def tiles_out_of_place(state, goal):
+    """Counts tiles not in their goal position (excluding blank)."""
+    count = 0
+    for i in range(9):
+        if state[i] != 0 and state[i] != goal[i]:
+            count += 1
+    return count
+
+def manhattan_distance_8p(state, goal):
+    """Sum of Manhattan distances for all tiles (excluding blank)."""
+    dist = 0
+    for tile in range(1, 9):
+        i = state.index(tile)
+        g = goal.index(tile)
+        r1, c1 = i // 3, i % 3
+        r2, c2 = g // 3, g % 3
+        dist += abs(r1 - r2) + abs(c1 - c2)
+    return dist
+
+def astar_8p(start, heuristic, heuristic_name):
+    """A* for 8-puzzle with statistics."""
+    
+    frontier = []
+    counter = 0
+    h = heuristic(start, goal)
+    heapq.heappush(frontier, (h, counter, start, [], 0))
+    
+    explored = set()
+    nodes_expanded = 0
+    max_frontier = 1
+    
+    print(f"\nA* using {heuristic_name}")
+    print("-" * 40)
+    
+    while frontier:
+        max_frontier = max(max_frontier, len(frontier))
+        
+        f, _, state, path, g = heapq.heappop(frontier)
+        
+        if state in explored:
+            continue
+        
+        nodes_expanded += 1
+        
+        if state == goal:
+            print("✓ Goal found!")
+            print(f"Nodes expanded: {nodes_expanded}")
+            print(f"Max frontier size: {max_frontier}")
+            print(f"Solution length: {len(path)}")
+            print(f"Solution path: {path}")
+            return nodes_expanded, len(path)
+        
+        explored.add(state)
+        
+        blank = state.index(0)
+        row, col = blank // 3, blank % 3
+        
+        moves = []
+        if row > 0: moves.append(-3)
+        if row < 2: moves.append(3)
+        if col > 0: moves.append(-1)
+        if col < 2: moves.append(1)
+        
+        for move in moves:
+            new_blank = blank + move
+            new_state = list(state)
+            new_state[blank], new_state[new_blank] = new_state[new_blank], new_state[blank]
+            new_state = tuple(new_state)
+            
+            if new_state not in explored:
+                new_g = g + 1
+                new_h = heuristic(new_state, goal)
+                new_f = new_g + new_h
+                counter += 1
+                heapq.heappush(frontier, (new_f, counter, new_state, path + [new_state], new_g))
+    
+    return None, None
+
+# Example initial state
+start = (8, 6, 7,
+         2, 5, 4,
+         3, 0, 1)
+
+print("Initial State:")
+for i in range(0, 9, 3):
+    print(" ", start[i:i+3])
+
+# Run both heuristics
+stats_tiles = astar_8p(start, tiles_out_of_place, "Tiles Out of Place")
+stats_manhattan = astar_8p(start, manhattan_distance_8p, "Manhattan Distance")
+
+print("\n" + "=" * 50)
+print("COMPARISON SUMMARY")
+print("=" * 50)
+print(f"Tiles Out of Place expanded: {stats_tiles[0]} nodes")
+print(f"Manhattan Distance expanded: {stats_manhattan[0]} nodes")
+```
+
+### Reflection Questions
+
+**Question 22:** Both heuristics are admissible, yet Manhattan distance usually expands fewer nodes than tiles out of place. Why does Manhattan distance provide more useful information about how far a state is from the goal?
+
+**Question 23:** In what situations might both heuristics return the same value for a state? Give an example and explain why the heuristics agree.
+
+**Question 24:** Which heuristic dominates the other? Use the formal definition of heuristic dominance to justify your answer.
+
+**Question 25:** Compare the nodes expanded using Manhattan distance versus Euclidean distance. Which is a better heuristic for grid movement, and why? Consider what types of moves are allowed in the grid world.
+
+---
+
 ## Summary and Key Takeaways
 
 ### Problem Formulation
@@ -888,4 +1033,4 @@ You can make a **private** Github Repo and add me as a collaborator, my username
 
 Congrats, you're done with the second lab!
 
----
+---d
