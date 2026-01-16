@@ -932,6 +932,14 @@ def astar_8p(start, heuristic, heuristic_name):
         if row < 2: moves.append(3)
         if col > 0: moves.append(-1)
         if col < 2: moves.append(1)
+
+        # | Offset | Movement | Explanation                                      |
+        # | ------ | -------- | ------------------------------------------------ |
+        # | `-3`   | Up       | Move blank one row up (3 positions back in list) |
+        # | `+3`   | Down     | Move blank one row down (3 positions forward)    |
+        # | `-1`   | Left     | Move blank one column left                       |
+        # | `+1`   | Right    | Move blank one column right                      |
+
         
         for move in moves:
             new_blank = blank + move
