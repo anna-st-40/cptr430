@@ -9,7 +9,7 @@ to take or they fail to optimize their schedule based on personal preferences, s
 
 ## Project Goal
 The goal of this project is to develop an AI-powered advising assistant that takes your current transcript and based on that it can advise you as to what classes
-you should take in order to graduate in 4 years. To keep this simple and for the scope of this lass, we will only consider advising for Computer Science majors only.
+you should take in order to graduate in 4 years. To keep this simple and for the scope of this class, we will only consider advising for BS in Computer Science on the 2023-24 bulletin.
 The system will ingest the official class schedule and degree requirements, interact
 with the student to understand their preferences, and generate valid schedule options that ensure timely graduation.
 
