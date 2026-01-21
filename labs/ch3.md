@@ -206,11 +206,15 @@ def bfs_search(problem):
     frontier = deque([initial_node])  # FIFO queue
     explored = set()
     nodes_expanded = 0
+    max_frontier_size = len(frontier)
     
     print("BREADTH-FIRST SEARCH")
     print("=" * 50)
     
     while frontier:
+        # Track max frontier size
+        max_frontier_size = max(max_frontier_size, len(frontier))
+        
         print(f"\nFrontier size: {len(frontier)}, Explored: {len(explored)}")
         
         # Remove first node from frontier (FIFO)
@@ -222,45 +226,33 @@ def bfs_search(problem):
         
         explored.add(state)
         
-        # Expand the node - show what actions are available
-        actions = problem.get_actions(state)
-        print(f"  Available actions: {actions}")
-        
-        for action in actions:
+        # Expand the node
+        for action in problem.get_actions(state):
             child_state = problem.result(state, action)
-            print(f"  Applying '{action}' →", end=" ")
             
             if child_state not in explored and child_state not in [n[0] for n in frontier]:
                 child_path = path + [action]
                 child_cost = cost + 1
                 
                 if problem.is_goal(child_state):
-                    print("GOAL!")
-                    print(f"\n{'='*50}")
-                    print(f"✓ Goal found! Total nodes expanded: {nodes_expanded}")
-                    print(f"\nGoal state reached:")
-                    problem.display_state(child_state)
-                    print(f"\nSolution path: {child_path}")
+                    print(f"\n✓ Goal found!")
+                    print(f"Total nodes expanded: {nodes_expanded}")
+                    print(f"Maximum frontier size: {max_frontier_size}") 
+                    print(f"Solution path: {child_path}")
                     print(f"Path length: {len(child_path)}")
                     return child_path
-                else:
-                    print("added to frontier")
                 
                 frontier.append((child_state, child_path, child_cost))
-            else:
-                if child_state in explored:
-                    print("already explored")
-                else:
-                    print("already in frontier")
     
-    return None  # No solution
+    print("\n✗ No solution found.")
+    print(f"Total nodes expanded: {nodes_expanded}")
+    print(f"Maximum frontier size: {max_frontier_size}")  
+    return None
 
-initial = (1, 2, 3, 4, 5, 6, 0, 7, 8)
-goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
 
-# Problem requiring 4 moves for more interesting exploration
-# initial = (1, 2, 3, 4, 0, 5, 7, 8, 6)  # Blank at position 4 (center)
-# goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)      # Standard goal (blank at bottom-right)
+initial = (8, 6, 7, 2, 5, 4, 3, 0, 1)
+goal    = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+
 
 problem = EightPuzzle(initial, goal)
 solution = bfs_search(problem)
@@ -359,12 +351,8 @@ def dfs_search(problem, max_depth=20):
     
     return None
 
-initial = (1, 2, 3, 4, 5, 6, 0, 7, 8)
-goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
-
-# Problem requiring 4 moves for more interesting exploration
-# initial = (1, 2, 3, 4, 0, 5, 7, 8, 6)  # Blank at position 4 (center)
-# goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)      # Standard goal (blank at bottom-right)
+initial = (8, 6, 7, 2, 5, 4, 3, 0, 1)
+goal    = (1, 2, 3, 4, 5, 6, 7, 8, 0)
 
 problem = EightPuzzle(initial, goal)
 solution = dfs_search(problem)
