@@ -288,7 +288,7 @@ Run the code and compare DFS to BFS from Exercise 2. Notice:
 - How the depth limit prevents infinite exploration
 
 ```python
-def dfs_search(problem, max_depth=20):
+def dfs_search(problem, max_depth=100):
     """Depth-first search with depth limiting."""
     
     initial_node = (problem.initial, [], 0)
