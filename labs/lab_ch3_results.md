@@ -28,8 +28,24 @@ It is looking at all possible solutions up to a certain path length (the first s
 
 **Question 7:** Compare the maximum frontier size between DFS and BFS. Why does DFS use significantly less memory, and in what situations would this memory advantage be crucial for solving a problem?
 
-Unlike BFS, DFS does not store the entire level in memory at once. This would be advantageous in scenarios where the solution is deep in a wide tree or a graph with a lot of children of each node.
+Unlike BFS, DFS does not store the entire level in memory at once. This would be advantageous in scenarios where the solution is deep in a wide tree or a graph with a large branching factor.
 
 **Question 8:** DFS found a solution, but was it the optimal (shortest) solution? Explain why DFS is not guaranteed to find the optimal solution even when one exists, and describe a scenario where DFS might find a very poor solution.
 
+No, it was not the optimal solution. It just finds the first leftmost solution, which is much faster than finding the absolute optimal solution. DFS might find a very poor solution when there is a very deep solution somewhere in the left side of the tree, while a very shallow solution exists on the right side of the tree.
+
 **Question 9:** We implemented a depth limit to prevent DFS from exploring infinitely deep paths. What problems could arise without this limit, and how does this relate to the concept of completeness in search algorithms?
+
+Without this limit, it can get stuck with infinite exploration, since the tree is infinite and unless the solution exists along the leftmost branch (constantly taking only that one action), it will search forever. There is no guarantee that the algorithm will find a solution if it exists.
+
+**Question 10:** How does UCS decide which node to expand next, and why does this strategy guarantee finding the optimal solution? Compare this to how BFS makes its expansion decisions.
+
+It expands the node with the lowest cost to travel to it first, and puts it on a priority queue. The solution you find will be the lowest cost solution because you are always looking at the currently lowest path first. This is similar to BFS in that it orders the nodes into the frontier by cost, but in BFS it is implied that the cost is always 1, so the path cost lines up with the path length and the level.
+
+**Question 11:** Observe the path found by UCS through the grid. Does it go directly toward the goal, or does it take a longer route? Explain why UCS chose this path in terms of path cost versus path length.
+
+It does not go directly, it takes a longer route. However, that longer route costs less than a direct route. The "direct" path would cost 11, while the optimal path costs 8.
+
+**Question 12:** In what types of problems would UCS perform identically to BFS? When would UCS clearly outperform BFS in terms of solution quality? Give specific examples of problem domains.
+
+It would perform identically to BFS where all the path costs are the same. An example where UCS outperforms would be a GPS navigator where the speed limit of roads matters, not just the actual length of the road. In general, it would outperform in any problem where the path costs are vastly different.
