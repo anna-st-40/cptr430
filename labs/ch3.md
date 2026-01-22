@@ -1009,13 +1009,11 @@ The choice of search algorithm depends on:
 
 Create a new **public** Github Repository called `cs430`, upload your local `cs430` folder there including the `agent.ipynb` file from this lab and:
 
-A Markdown document called `reflections.md` containing this header
-
 Create `lab_ch3_results.md`:
 
 ```markdown
 # Names: Your names here
-# Lab: lab1 (Intelligent Agents)
+# Lab: lab2 (Search/Problem-Solving)
 # Date: Today's date
 ```
 
