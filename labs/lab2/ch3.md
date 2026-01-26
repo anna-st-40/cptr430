@@ -288,7 +288,7 @@ Run the code and compare DFS to BFS from Exercise 2. Notice:
 - How the depth limit prevents infinite exploration
 
 ```python
-def dfs_search(problem, max_depth=100):
+def dfs_search(problem, max_depth=20):
     """Depth-first search with depth limiting."""
     
     initial_node = (problem.initial, [], 0)
@@ -1009,11 +1009,13 @@ The choice of search algorithm depends on:
 
 Create a new **public** Github Repository called `cs430`, upload your local `cs430` folder there including the `agent.ipynb` file from this lab and:
 
+A Markdown document called `reflections.md` containing this header
+
 Create `lab_ch3_results.md`:
 
 ```markdown
 # Names: Your names here
-# Lab: lab2 (Search/Problem-Solving)
+# Lab: lab1 (Intelligent Agents)
 # Date: Today's date
 ```
 
