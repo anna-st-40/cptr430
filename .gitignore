@@ -4,3 +4,5 @@ main.py
 .DS_Store
 lab1_ch2.py
 lab2_ch3.py
+/.venv
+uv.lock
