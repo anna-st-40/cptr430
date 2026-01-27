@@ -740,9 +740,9 @@ def run_comparison(num_games=20, board_size=12, depths=[2, 3, 4, 5]):
 if __name__ == "__main__":
     results = run_comparison(num_games=20, board_size=12, depths=[2, 3, 4, 5])
 
-# if __name__ == "__main__":
-#     run_minimax_tournament(5, depth=5)
-#     visualize_minimax_game(depth=5)
+if __name__ == "__main__":
+    run_minimax_tournament(5, depth=5)
+    visualize_minimax_game(depth=5)
 ```
 
 ### Reflection Questions
