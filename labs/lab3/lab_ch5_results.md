@@ -16,10 +16,16 @@ The agents usually crash into themselves long before they reach their opponent, 
 
 **Question 4:** Explain why the greedy agent's flood-fill heuristic is effective against random play, and what assumption about survival it makes that proves generally correct in Tron.
 
-The greedy agent tries to fill up its side of the board, and what ends up happening is it minds its own business while waiting for the random agent to crash into itself. It makes the assumption that 
+The greedy agent tries to fill up its side of the board, and what ends up happening is it minds its own business while waiting for the random agent to crash into itself. It makes the assumption that controlling more empty space correlates with longer survival, which proves generally correct.
 
 **Question 5:** Describe a scenario where greedy space-maximization could lead to a losing position, demonstrating the difference between local optimality and global strategy.
 
+There are instances where the greedy agent draws itself into a corner, usually in the third column. It creates trails on all sides and then goes into the box of its own making, not realizing it has no way out. Local optimality directs it to go in, while global strategy might predict that this is a dead-end route.
+
 **Question 6:** How does the computational cost of flood-fill (which explores many cells) compare to random selection, and why might this cost be acceptable for a real-time game?
 
+It has a larger computational cost since it has to actually compute information about its environment. However, this is acceptable because this algorithm has a much higher win rate, since it has an actual strategy.
+
 **Question 6b (Visualization):** After watching the greedy vs random visualization, describe what strategic patterns you noticed in the greedy agent's movement. How does visualizing the space-control heuristic in action deepen your understanding compared to just reading the code?
+
+The greedy agent mostly just goes up and down, filling in lines vertically. Visualizing the heuristic makes it make more sense, that it is just trying to fill up space as tightly as possible.
