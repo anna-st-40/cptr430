@@ -162,6 +162,7 @@ def visualize_minimax_game(depth=5):
     
     winner = "Minimax" if game_viz.winner == 1 else ("Greedy" if game_viz.winner == 2 else "Draw")
     print(f"Visualized game: {winner} wins! ({move_count} moves)")
+    input()
     game_viz.close()
 
 

@@ -29,3 +29,13 @@ It has a larger computational cost since it has to actually compute information 
 **Question 6b (Visualization):** After watching the greedy vs random visualization, describe what strategic patterns you noticed in the greedy agent's movement. How does visualizing the space-control heuristic in action deepen your understanding compared to just reading the code?
 
 The greedy agent mostly just goes up and down, filling in lines vertically. Visualizing the heuristic makes it make more sense, that it is just trying to fill up space as tightly as possible.
+
+**Question 7:** Explain why minimax requires an evaluation function at depth limits rather than computing exact game outcomes, and what trade-off this represents between accuracy and computational feasibility. Based on the results, at what depth does minimax start to significantly outperform greedy (if at all)? What does this suggest about the "lookahead horizon" needed in Tron?
+
+Computing exact game outcomes to the very end would grow exponentially and not be computationally feasible. The tradeoff is that the solution won't be as perfect, but it will be a lot more efficient to find. At depth 5, the minimax starts to significantly outperform greedy. This suggests that the lookahead horizon increases the quality of the decisions in Tron.
+
+**Question 8:** Analyze how alpha-beta pruning reduces the search space without affecting the final decision, and describe a scenario where pruning would be most effective (many cutoffs vs few cutoffs).
+
+**Question 9:** Compare minimax's assumption of optimal opponent play to the greedy agent's behavior. When would this assumption hurt minimax's performance, and when would it help?
+
+**Question 9b (Critical Thinking):** If minimax with depth-3 only wins 50-60% of games against greedy (rather than 80-90%), what does this suggest about the relationship between lookahead and the quality of the evaluation function? Consider that both algorithms use the same space-difference heuristic at their search horizon.
