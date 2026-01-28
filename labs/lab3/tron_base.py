@@ -270,6 +270,7 @@ def visualize_random_game():
     
     winner = f"Player {game_viz.winner}" if game_viz.winner else "Draw"
     print(f"\nVisualized game complete! Winner: {winner}")
+    input()
     game_viz.close()
 
 # Run if executed directly
