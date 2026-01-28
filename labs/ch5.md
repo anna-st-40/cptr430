@@ -507,7 +507,7 @@ from copy import deepcopy
 class MinimaxAgent:
     """Agent using minimax with alpha-beta pruning"""
     
-    def __init__(self, depth=3):
+    def __init__(self, depth=5):
         self.depth = depth
         self.nodes_evaluated = 0
     
@@ -609,7 +609,7 @@ class MinimaxAgent:
         return best_action
 
 # Tournament and visualization functions
-def run_minimax_tournament(num_games=5, depth=3):
+def run_minimax_tournament(num_games=5, depth=5):
     """Run tournament between minimax and greedy agents"""
     print("\n=== MINIMAX (depth={}) vs GREEDY ({} games) ===\n".format(depth, num_games))
     
@@ -641,7 +641,7 @@ def run_minimax_tournament(num_games=5, depth=3):
     print(f"\nResults: Minimax={results['minimax']}, Greedy={results['greedy']}, Draws={results['draw']}")
     return results
 
-def visualize_minimax_game(depth=3):
+def visualize_minimax_game(depth=5):
     """Run one visualized game between minimax and greedy"""
     print("\n" + "="*60)
     print("Watch Minimax vs Greedy - notice the planning!")
@@ -1206,7 +1206,7 @@ agents = {
     'Random': RandomAgent(),
     'Greedy': GreedyAgent(),
     'Minimax-2': MinimaxAgent(depth=2),
-    'Minimax-3': MinimaxAgent(depth=3),
+    'Minimax-3': MinimaxAgent(depth=5),
     'MCTS-200': MCTSAgent(simulations=200),
     'MCTS-500': MCTSAgent(simulations=500)
 }
@@ -1425,7 +1425,7 @@ def advanced_evaluate(board, p1_pos, p2_pos):
 class AdvancedMinimaxAgent:
     """Minimax with articulation-point aware evaluation"""
     
-    def __init__(self, depth=3):
+    def __init__(self, depth=5):
         self.depth = depth
         self.nodes_evaluated = 0
     
@@ -1518,7 +1518,7 @@ class AdvancedMinimaxAgent:
         
         return best_action
 
-def compare_heuristics(num_games=15, depth=3, board_size=10):
+def compare_heuristics(num_games=15, depth=5, board_size=10):
     """Compare standard minimax vs advanced minimax"""
     print(f"\n{'='*70}")
     print(f"HEURISTIC COMPARISON: Standard vs Advanced Evaluation")
@@ -1601,7 +1601,7 @@ if __name__ == "__main__":
     print("\n" + "="*70)
     print("TEST 1: Standard 10x10 Board")
     print("="*70)
-    compare_heuristics(num_games=15, depth=3, board_size=10)
+    compare_heuristics(num_games=15, depth=5, board_size=10)
     
     # Test on small board where tactics matter more
     print("\n\n" + "="*70)
