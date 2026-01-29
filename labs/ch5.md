@@ -859,6 +859,9 @@ class MCTSAgent:
         """Simulation phase: random playout"""
         sim_state = deepcopy(state)
         current_player = player
+
+        if 'loser' in sim_state:
+            return -1 if sim_state['loser'] == 1 else 1
         
         for _ in range(50):  # Max simulation depth
             moves = sim_state['p1_moves'] if current_player == 1 else sim_state['p2_moves']
@@ -895,10 +898,17 @@ class MCTSAgent:
 
         # --- SAFETY CHECK ---
         h, w = new_state['board'].shape
+
         if not (0 <= new_pos[0] < h and 0 <= new_pos[1] < w):
-            return new_state   # invalid move -> treat as dead end
+            new_state['p1_moves'] = []
+            new_state['p2_moves'] = []
+            new_state['loser'] = player
+            return new_state
 
         if new_state['board'][new_pos] != 0:
+            new_state['p1_moves'] = []
+            new_state['p2_moves'] = []
+            new_state['loser'] = player
             return new_state
 
         new_state['board'][new_pos] = player
@@ -928,53 +938,54 @@ class MCTSAgent:
                 moves.append(action)
         return moves
 
-# Tournament
-print("\n=== MCTS (500 sims) vs GREEDY (5 games) ===\n")
-mcts = MCTSAgent(simulations=500)
-greedy = GreedyAgent()
-results = {'mcts': 0, 'greedy': 0, 'draw': 0}
+if __name__ == "__main__":
+    # Tournament
+    print("\n=== MCTS (500 sims) vs GREEDY (5 games) ===\n")
+    mcts = MCTSAgent(simulations=500)
+    greedy = GreedyAgent()
+    results = {'mcts': 0, 'greedy': 0, 'draw': 0}
 
-for game_num in range(5):
-    game = TronGame(width=10, height=10)
-    state = game.reset()
-    moves = 0
-    
-    while not game.game_over and moves < 100:
+    for game_num in range(5):
+        game = TronGame(width=10, height=10)
+        state = game.reset()
+        moves = 0
+        
+        while not game.game_over and moves < 100:
+            a1 = mcts.get_action(state, 1)
+            a2 = greedy.get_action(state, 2)
+            state, reward, done = game.step(a1, a2)
+            moves += 1
+        
+        winner_name = "MCTS" if game.winner == 1 else ("Greedy" if game.winner == 2 else "Draw")
+        if game.winner == 1:
+            results['mcts'] += 1
+        elif game.winner == 2:
+            results['greedy'] += 1
+        else:
+            results['draw'] += 1
+        
+        print(f"Game {game_num + 1}: Winner = {winner_name}, Moves = {moves}")
+
+    print(f"\nResults: MCTS={results['mcts']}, Greedy={results['greedy']}, Draws={results['draw']}")
+
+    # Optional: Visualize MCTS's probabilistic decision-making
+    print("\n" + "="*60)
+    print("Watch MCTS vs Greedy - see the exploration!")
+    print("="*60)
+
+    game_viz = TronGame(width=10, height=10, visualize=True, cell_size=50)
+    state = game_viz.reset()
+    move_count = 0
+
+    while not game_viz.game_over and move_count < 100:
         a1 = mcts.get_action(state, 1)
         a2 = greedy.get_action(state, 2)
-        state, reward, done = game.step(a1, a2)
-        moves += 1
-    
-    winner_name = "MCTS" if game.winner == 1 else ("Greedy" if game.winner == 2 else "Draw")
-    if game.winner == 1:
-        results['mcts'] += 1
-    elif game.winner == 2:
-        results['greedy'] += 1
-    else:
-        results['draw'] += 1
-    
-    print(f"Game {game_num + 1}: Winner = {winner_name}, Moves = {moves}")
+        state, reward, done = game_viz.step(a1, a2)
+        move_count += 1
 
-print(f"\nResults: MCTS={results['mcts']}, Greedy={results['greedy']}, Draws={results['draw']}")
-
-# Optional: Visualize MCTS's probabilistic decision-making
-print("\n" + "="*60)
-print("Watch MCTS vs Greedy - see the exploration!")
-print("="*60)
-
-game_viz = TronGame(width=10, height=10, visualize=True, cell_size=50)
-state = game_viz.reset()
-move_count = 0
-
-while not game_viz.game_over and move_count < 100:
-    a1 = mcts.get_action(state, 1)
-    a2 = greedy.get_action(state, 2)
-    state, reward, done = game_viz.step(a1, a2)
-    move_count += 1
-
-winner = "MCTS" if game_viz.winner == 1 else ("Greedy" if game_viz.winner == 2 else "Draw")
-print(f"Visualized game: {winner} wins!")
-game_viz.close()
+    winner = "MCTS" if game_viz.winner == 1 else ("Greedy" if game_viz.winner == 2 else "Draw")
+    print(f"Visualized game: {winner} wins!")
+    game_viz.close()
 ```
 
 ### Reflection Questions
