@@ -31,49 +31,49 @@ class GreedyAgent:
         
         return best_action
 
-# Tournament - Test the greedy agent
-print("\n=== GREEDY vs RANDOM (10 games) ===\n")
-greedy = GreedyAgent()
-random_agent = RandomAgent()
-results = {'greedy': 0, 'random': 0, 'draw': 0}
+# # Tournament - Test the greedy agent
+# print("\n=== GREEDY vs RANDOM (10 games) ===\n")
+# greedy = GreedyAgent()
+# random_agent = RandomAgent()
+# results = {'greedy': 0, 'random': 0, 'draw': 0}
 
-for game_num in range(10):
-    game = TronGame(width=12, height=12)
-    state = game.reset()
-    moves = 0
+# for game_num in range(10):
+#     game = TronGame(width=12, height=12)
+#     state = game.reset()
+#     moves = 0
     
-    while not game.game_over:
-        a1 = greedy.get_action(state, 1)
-        a2 = random_agent.get_action(state, 2)
-        state, reward, done = game.step(a1, a2)
-        moves += 1
+#     while not game.game_over:
+#         a1 = greedy.get_action(state, 1)
+#         a2 = random_agent.get_action(state, 2)
+#         state, reward, done = game.step(a1, a2)
+#         moves += 1
     
-    winner_name = "Greedy" if game.winner == 1 else ("Random" if game.winner == 2 else "Draw")
-    if game.winner == 1:
-        results['greedy'] += 1
-    elif game.winner == 2:
-        results['random'] += 1
-    else:
-        results['draw'] += 1
+#     winner_name = "Greedy" if game.winner == 1 else ("Random" if game.winner == 2 else "Draw")
+#     if game.winner == 1:
+#         results['greedy'] += 1
+#     elif game.winner == 2:
+#         results['random'] += 1
+#     else:
+#         results['draw'] += 1
     
-    print(f"Game {game_num + 1}: Winner = {winner_name}, Moves = {moves}")
+#     print(f"Game {game_num + 1}: Winner = {winner_name}, Moves = {moves}")
 
-print(f"\nResults: Greedy={results['greedy']}, Random={results['random']}, Draws={results['draw']}")
+# print(f"\nResults: Greedy={results['greedy']}, Random={results['random']}, Draws={results['draw']}")
 
 # Optional: Visualize one match
-print("\n" + "="*60)
-print("Watch Greedy vs Random with visualization!")
-print("="*60)
+# print("\n" + "="*60)
+# print("Watch Greedy vs Random with visualization!")
+# print("="*60)
 
-game_viz = TronGame(width=12, height=12, visualize=True, cell_size=50)
-state = game_viz.reset()
+# game_viz = TronGame(width=12, height=12, visualize=True, cell_size=50)
+# state = game_viz.reset()
 
-while not game_viz.game_over and state:
-    a1 = greedy.get_action(state, 1)
-    a2 = random_agent.get_action(state, 2)
-    state, reward, done = game_viz.step(a1, a2)
+# while not game_viz.game_over and state:
+#     a1 = greedy.get_action(state, 1)
+#     a2 = random_agent.get_action(state, 2)
+#     state, reward, done = game_viz.step(a1, a2)
 
-winner = "Greedy" if game_viz.winner == 1 else ("Random" if game_viz.winner == 2 else "Draw")
-print(f"Visualized game: {winner} wins!")
-input()
-game_viz.close()
+# winner = "Greedy" if game_viz.winner == 1 else ("Random" if game_viz.winner == 2 else "Draw")
+# print(f"Visualized game: {winner} wins!")
+# input()
+# game_viz.close()
