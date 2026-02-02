@@ -57,7 +57,6 @@ UCB1 determines whether to explore new options or use known good moves, whereas 
 **Question 12:** Describe why MCTS might outperform minimax in games with high branching factors or deep game trees, referencing the computational complexity of each approach.
 
 Minimax will need more depth and therefore more memory and compute to solve games with high branching factors or deep game trees. MCTS, on the other hand, just needs to run the game multiple times, and it doesn't really look ahead so the depth doesn't matter as much, and it doesn't explore all options at once so the high branching factor doesn't matter much either.
-**Question 9b (Critical Thinking):** If minimax with depth-3 only wins 50-60% of games against greedy (rather than 80-90%), what does this suggest about the relationship between lookahead and the quality of the evaluation function? Consider that both algorithms use the same space-difference heuristic at their search horizon.
 
 **Question 13:** Analyze the trade-offs between using an LLM for game-playing versus traditional algorithms. Consider factors like interpretability, computational cost, and performance ceiling.
 
