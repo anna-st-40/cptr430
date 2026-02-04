@@ -11,7 +11,7 @@ By the end of this lab, you will be able to:
 
 ## Lab Overview
 
-This lab uses **Tron Light Cycles** (a grid-based adversarial game) as a concrete domain to explore different AI approaches to competitive decision-making. In Tron, two players move simultaneously on a grid, leaving permanent trails behind them. If a player hits a wall, border, or trail, they lose. The last player alive wins.
+This lab uses **Tron Light Cycles** (a grid-based adversarial game) as a concrete domain to explore different AI approaches to competitive decision-making. In Tron, two players move simultaneously on a grid, leaving permanent trails behind them. If a player hits a wall, border, or trail, they crash out. The last player remaining wins! ^_^
 
 You will observe and analyze implementations of:
 - Random baseline agents
@@ -24,7 +24,6 @@ You will observe and analyze implementations of:
 - Python 3.10+
 - Libraries: `numpy`, `random`, `copy`, `requests` (for Ollama API), `pygame` (for visualization)
 - CS Lab network access with `llama3.2` model pulled (for Exercise 5 only)
-- Install pygame: ``
 
 I suggest running the following commands from your base user directory if necessary:
 
@@ -42,10 +41,10 @@ source .venv/bin/activate
 
 **Code Organization:**
 - **Exercise 1** creates `tron_base.py` - save this file (contains TronGame, RandomAgent, flood_fill)
-- **Exercises 2-5** add new agents to separate files
+- **Exercises 2-5** add new agents to separate files/modules
 - **Exercises 6-8** import from all modules and use all agents
 
-**Pedagogical Approach:** You will run complete implementations and observe their behavior, output, and decision patterns. Focus on understanding *why* each approach makes the decisions it does, not on writing the code yourself.
+**Pedagogical Approach:** You will run complete implementations and observe their behavior, output, and decision patterns. Focus on understanding *why* each approach makes the decisions it does!
 
 ---
 
@@ -507,7 +506,7 @@ from copy import deepcopy
 class MinimaxAgent:
     """Agent using minimax with alpha-beta pruning"""
     
-    def __init__(self, depth=5):
+    def __init__(self, depth=3):
         self.depth = depth
         self.nodes_evaluated = 0
     
@@ -609,7 +608,7 @@ class MinimaxAgent:
         return best_action
 
 # Tournament and visualization functions
-def run_minimax_tournament(num_games=5, depth=5):
+def run_minimax_tournament(num_games=5, depth=3):
     """Run tournament between minimax and greedy agents"""
     print("\n=== MINIMAX (depth={}) vs GREEDY ({} games) ===\n".format(depth, num_games))
     
@@ -641,7 +640,7 @@ def run_minimax_tournament(num_games=5, depth=5):
     print(f"\nResults: Minimax={results['minimax']}, Greedy={results['greedy']}, Draws={results['draw']}")
     return results
 
-def visualize_minimax_game(depth=5):
+def visualize_minimax_game(depth=3):
     """Run one visualized game between minimax and greedy"""
     print("\n" + "="*60)
     print("Watch Minimax vs Greedy - notice the planning!")
@@ -1262,7 +1261,7 @@ agents = {
     'Random': RandomAgent(),
     'Greedy': GreedyAgent(),
     'Minimax-2': MinimaxAgent(depth=2),
-    'Minimax-3': MinimaxAgent(depth=5),
+    'Minimax-3': MinimaxAgent(depth=3),
     'MCTS-200': MCTSAgent(simulations=200),
     'MCTS-500': MCTSAgent(simulations=500)
 }
@@ -1481,7 +1480,7 @@ def advanced_evaluate(board, p1_pos, p2_pos):
 class AdvancedMinimaxAgent:
     """Minimax with articulation-point aware evaluation"""
     
-    def __init__(self, depth=5):
+    def __init__(self, depth=3):
         self.depth = depth
         self.nodes_evaluated = 0
     
@@ -1574,7 +1573,7 @@ class AdvancedMinimaxAgent:
         
         return best_action
 
-def compare_heuristics(num_games=15, depth=5, board_size=10):
+def compare_heuristics(num_games=15, depth=3, board_size=10):
     """Compare standard minimax vs advanced minimax"""
     print(f"\n{'='*70}")
     print(f"HEURISTIC COMPARISON: Standard vs Advanced Evaluation")
