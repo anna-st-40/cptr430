@@ -1664,6 +1664,29 @@ if __name__ == "__main__":
     print("TEST 2: Small 6x6 Board (Tactics-Heavy)")
     print("="*70)
     compare_heuristics(num_games=15, depth=4, board_size=6)
+    
+    # Optional: Visualize 
+    print("\n" + "="*60)
+    print("Watch MCTS vs Greedy - see the exploration!")
+    print("="*60)
+
+    game_viz = TronGame(width=20, height=20, visualize=True, cell_size=50)
+    state = game_viz.reset()
+    move_count = 0
+
+    depth = 7
+    advanced = AdvancedMinimaxAgent(depth=depth)
+    greedy = GreedyAgent()
+
+    while not game_viz.game_over and move_count < 100:
+        a1 = advanced.get_action(state, 1)
+        a2 = greedy.get_action(state, 2)
+        state, reward, done = game_viz.step(a1, a2)
+        move_count += 1
+
+    winner = "MCTS" if game_viz.winner == 1 else ("Greedy" if game_viz.winner == 2 else "Draw")
+    print(f"Visualized game: {winner} wins!")
+    game_viz.close()
 ```
 
 ### Reflection Questions
