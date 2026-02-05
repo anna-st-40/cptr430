@@ -11,7 +11,7 @@ By the end of this lab, you will be able to:
 
 ## Lab Overview
 
-This lab uses **Tron Light Cycles** (a grid-based adversarial game) as a concrete domain to explore different AI approaches to competitive decision-making. In Tron, two players move simultaneously on a grid, leaving permanent trails behind them. If a player hits a wall, border, or trail, they lose. The last player alive wins.
+This lab uses **Tron Light Cycles** (a grid-based adversarial game) as a concrete domain to explore different AI approaches to competitive decision-making. In Tron, two players move simultaneously on a grid, leaving permanent trails behind them. If a player hits a wall, border, or trail, they crash out. The last player remaining wins! ^_^
 
 You will observe and analyze implementations of:
 - Random baseline agents
@@ -24,7 +24,6 @@ You will observe and analyze implementations of:
 - Python 3.10+
 - Libraries: `numpy`, `random`, `copy`, `requests` (for Ollama API), `pygame` (for visualization)
 - CS Lab network access with `llama3.2` model pulled (for Exercise 5 only)
-- Install pygame: ``
 
 I suggest running the following commands from your base user directory if necessary:
 
@@ -42,10 +41,10 @@ source .venv/bin/activate
 
 **Code Organization:**
 - **Exercise 1** creates `tron_base.py` - save this file (contains TronGame, RandomAgent, flood_fill)
-- **Exercises 2-5** add new agents to separate files
+- **Exercises 2-5** add new agents to separate files/modules
 - **Exercises 6-8** import from all modules and use all agents
 
-**Pedagogical Approach:** You will run complete implementations and observe their behavior, output, and decision patterns. Focus on understanding *why* each approach makes the decisions it does, not on writing the code yourself.
+**Pedagogical Approach:** You will run complete implementations and observe their behavior, output, and decision patterns. Focus on understanding *why* each approach makes the decisions it does!
 
 ---
 
@@ -507,7 +506,7 @@ from copy import deepcopy
 class MinimaxAgent:
     """Agent using minimax with alpha-beta pruning"""
     
-    def __init__(self, depth=5):
+    def __init__(self, depth=3):
         self.depth = depth
         self.nodes_evaluated = 0
     
@@ -609,7 +608,7 @@ class MinimaxAgent:
         return best_action
 
 # Tournament and visualization functions
-def run_minimax_tournament(num_games=5, depth=5):
+def run_minimax_tournament(num_games=5, depth=3):
     """Run tournament between minimax and greedy agents"""
     print("\n=== MINIMAX (depth={}) vs GREEDY ({} games) ===\n".format(depth, num_games))
     
@@ -641,7 +640,7 @@ def run_minimax_tournament(num_games=5, depth=5):
     print(f"\nResults: Minimax={results['minimax']}, Greedy={results['greedy']}, Draws={results['draw']}")
     return results
 
-def visualize_minimax_game(depth=5):
+def visualize_minimax_game(depth=3):
     """Run one visualized game between minimax and greedy"""
     print("\n" + "="*60)
     print("Watch Minimax vs Greedy - notice the planning!")
@@ -786,143 +785,188 @@ import random
 from copy import deepcopy
 
 # MCTS implementation
+import math
+import random
+import copy
+
+
 class MCTSNode:
-    """Node in the Monte Carlo search tree"""
-    
-    def __init__(self, state, parent=None, action=None):
+    def __init__(self, state, player, parent=None, move=None):
         self.state = state
+        self.player = player            # player TO MOVE at this node
         self.parent = parent
-        self.action = action
+        self.move = move
+
         self.children = []
         self.visits = 0
         self.value = 0.0
-        self.untried_actions = state['p1_moves'][:] if parent is None or parent.player == 2 else state['p2_moves'][:]
-        self.player = 1 if parent is None or parent.player == 2 else 2
-    
-    def ucb1(self, exploration=1.41):
-        """UCB1 formula for balancing exploitation/exploration"""
-        if self.visits == 0:
-            return float('inf')
-        return self.value / self.visits + exploration * math.sqrt(math.log(self.parent.visits) / self.visits)
-    
-    def best_child(self):
-        """Select child with highest UCB1 value"""
-        return max(self.children, key=lambda c: c.ucb1())
+
+        self.untried_actions = self.get_moves()
+
+    def get_moves(self):
+        return self.state['p1_moves'][:] if self.player == 1 else self.state['p2_moves'][:]
+
+    def is_fully_expanded(self):
+        return len(self.untried_actions) == 0
+
+    def best_child(self, c=math.sqrt(2)):
+        return max(
+            self.children,
+            key=lambda child: (
+                child.value / child.visits
+                + c * math.sqrt(math.log(self.visits) / child.visits)
+            )
+        )
+
 
 class MCTSAgent:
-    """Monte Carlo Tree Search agent"""
-    
-    def __init__(self, simulations=500):
+    def __init__(self, simulations=200):
         self.simulations = simulations
-    
-    def get_action(self, state, player):
-        """Run MCTS to select best action"""
-        if not state['p1_moves'] and player == 1:
+
+    def search(self, root_state, player):
+        self.root_player = player
+        root = MCTSNode(copy.deepcopy(root_state), player)
+
+        if self.is_terminal(root_state):
             return None
-        if not state['p2_moves'] and player == 2:
-            return None
-        
-        root = MCTSNode(state)
-        root.player = 3 - player  # Opposite player just moved
-        
-        # Run simulations
+
         for _ in range(self.simulations):
             node = self.select(root)
             result = self.simulate(node.state, node.player)
             self.backpropagate(node, result)
-        
-        # Choose most visited child
-        if not root.children:
-            moves = state['p1_moves'] if player == 1 else state['p2_moves']
-            return moves[0] if moves else None
-        
-        best = max(root.children, key=lambda c: c.visits)
-        return best.action
-    
-    def select(self, node):
-        """Selection phase: traverse tree using UCB1"""
-        while node.untried_actions == [] and node.children:
-            node = node.best_child()
-        
-        # Expansion
-        if node.untried_actions:
-            action = random.choice(node.untried_actions)
-            node.untried_actions.remove(action)
-            new_state = self.make_move(node.state, action, node.player)
-            child = MCTSNode(new_state, parent=node, action=action)
-            node.children.append(child)
-            return child
-        
-        return node
-    
-    def simulate(self, state, player):
-        """Simulation phase: random playout"""
-        sim_state = deepcopy(state)
-        current_player = player
 
-        if 'loser' in sim_state:
-            return -1 if sim_state['loser'] == 1 else 1
-        
-        for _ in range(50):  # Max simulation depth
-            moves = sim_state['p1_moves'] if current_player == 1 else sim_state['p2_moves']
-            if not moves:
-                return -1 if current_player == 1 else 1
-            
-            action = random.choice(moves)
-            sim_state = self.make_move(sim_state, action, current_player)
+        if not root.children:
+            moves = root_state['p1_moves'] if player == 1 else root_state['p2_moves']
+            return random.choice(moves) if moves else None
+
+        return max(root.children, key=lambda c: c.visits).move
+
+
+
+    def get_action(self, state, player):
+        return self.search(state, player)
+
+
+    # ------------------------
+    # Selection + Expansion
+    # ------------------------
+
+    def select(self, node):
+        while True:
+            # If terminal, return immediately
+            terminal_value = self.is_terminal(node.state)
+            if terminal_value is not None:
+                return node
+
+            # If node has moves to expand, expand one
+            if not node.is_fully_expanded():
+                return self.expand(node)
+
+            # Node fully expanded: go to best child if it exists
+            if node.children:
+                node = node.best_child()
+            else:
+                # Node has no children and no moves → treat as terminal
+                return node
+
+
+
+    def expand(self, node):
+        move = node.untried_actions.pop()
+        next_state = copy.deepcopy(node.state)
+        self.apply_move(next_state, move, node.player)
+
+        next_player = 3 - node.player
+        child = MCTSNode(
+            state=next_state,
+            player=next_player,
+            parent=node,
+            move=move
+        )
+        node.children.append(child)
+        return child
+
+    # ------------------------
+    # Simulation (Rollout)
+    # ------------------------
+
+    def simulate(self, state, player, max_depth=200):
+        current_state = copy.deepcopy(state)
+        current_player = player
+        depth = 0
+
+        while depth < max_depth:
+            terminal_value = self.is_terminal(current_state)
+            if terminal_value is not None:
+                return terminal_value
+
+            moves = (
+                current_state['p1_moves'] if current_player == 1 else current_state['p2_moves']
+            )
+            if not moves:  # No moves → current player loses
+                return -1 if current_player == self.root_player else 1
+
+            move = random.choice(moves)
+            self.apply_move(current_state, move, current_player)
             current_player = 3 - current_player
-        
-        # Heuristic evaluation if no winner
-        p1_space = flood_fill(sim_state['board'], sim_state['p1_pos'], 1)
-        p2_space = flood_fill(sim_state['board'], sim_state['p2_pos'], 2)
-        return 1 if p1_space > p2_space else -1
-    
+            depth += 1
+
+        return 0  # Timeout = draw
+
+
+    # ------------------------
+    # Backpropagation
+    # ------------------------
+
     def backpropagate(self, node, result):
-        """Backpropagation phase: update statistics"""
         while node:
             node.visits += 1
-            node.value += result if node.player == 1 else -result
+            node.value += result
             node = node.parent
-        
-    def make_move(self, state, action, player):
-        new_state = deepcopy(state)
 
+    # ------------------------
+    # Terminal Evaluation
+    # ------------------------
+
+    def is_terminal(self, state):
+        if 'loser' in state:
+            winner = 3 - state['loser']
+            return 1 if winner == self.root_player else -1
+        return None
+
+        
+    def apply_move(self, state, action, player):
         directions = {
             'UP': (-1, 0), 'DOWN': (1, 0),
             'LEFT': (0, -1), 'RIGHT': (0, 1)
         }
 
-        pos = new_state['p1_pos'] if player == 1 else new_state['p2_pos']
+        pos = state['p1_pos'] if player == 1 else state['p2_pos']
         dy, dx = directions[action]
         new_pos = (pos[0] + dy, pos[1] + dx)
 
-        # --- SAFETY CHECK ---
-        h, w = new_state['board'].shape
-
+        h, w = state['board'].shape
         if not (0 <= new_pos[0] < h and 0 <= new_pos[1] < w):
-            new_state['p1_moves'] = []
-            new_state['p2_moves'] = []
-            new_state['loser'] = player
-            return new_state
+            state['p1_moves'] = []
+            state['p2_moves'] = []
+            state['loser'] = player
+            return
 
-        if new_state['board'][new_pos] != 0:
-            new_state['p1_moves'] = []
-            new_state['p2_moves'] = []
-            new_state['loser'] = player
-            return new_state
+        if state['board'][new_pos] != 0:
+            state['p1_moves'] = []
+            state['p2_moves'] = []
+            state['loser'] = player
+            return
 
-        new_state['board'][new_pos] = player
+        state['board'][new_pos] = player
 
         if player == 1:
-            new_state['p1_pos'] = new_pos
+            state['p1_pos'] = new_pos
         else:
-            new_state['p2_pos'] = new_pos
+            state['p2_pos'] = new_pos
 
-        # Recompute BOTH players' moves every time
-        new_state['p1_moves'] = self.get_valid_moves(new_state['board'], new_state['p1_pos'])
-        new_state['p2_moves'] = self.get_valid_moves(new_state['board'], new_state['p2_pos'])
-
-        return new_state
+        state['p1_moves'] = self.get_valid_moves(state['board'], state['p1_pos'])
+        state['p2_moves'] = self.get_valid_moves(state['board'], state['p2_pos'])
 
     
     def get_valid_moves(self, board, pos):
@@ -1217,7 +1261,7 @@ agents = {
     'Random': RandomAgent(),
     'Greedy': GreedyAgent(),
     'Minimax-2': MinimaxAgent(depth=2),
-    'Minimax-3': MinimaxAgent(depth=5),
+    'Minimax-3': MinimaxAgent(depth=3),
     'MCTS-200': MCTSAgent(simulations=200),
     'MCTS-500': MCTSAgent(simulations=500)
 }
@@ -1436,7 +1480,7 @@ def advanced_evaluate(board, p1_pos, p2_pos):
 class AdvancedMinimaxAgent:
     """Minimax with articulation-point aware evaluation"""
     
-    def __init__(self, depth=5):
+    def __init__(self, depth=3):
         self.depth = depth
         self.nodes_evaluated = 0
     
@@ -1529,7 +1573,7 @@ class AdvancedMinimaxAgent:
         
         return best_action
 
-def compare_heuristics(num_games=15, depth=5, board_size=10):
+def compare_heuristics(num_games=15, depth=3, board_size=10):
     """Compare standard minimax vs advanced minimax"""
     print(f"\n{'='*70}")
     print(f"HEURISTIC COMPARISON: Standard vs Advanced Evaluation")
@@ -1619,6 +1663,29 @@ if __name__ == "__main__":
     print("TEST 2: Small 6x6 Board (Tactics-Heavy)")
     print("="*70)
     compare_heuristics(num_games=15, depth=4, board_size=6)
+
+    # Optional: Visualize 
+    print("\n" + "="*60)
+    print("Watch AdvMinimax vs Greedy - see the exploration!")
+    print("="*60)
+
+    game_viz = TronGame(width=20, height=20, visualize=True, cell_size=50)
+    state = game_viz.reset()
+    move_count = 0
+
+    depth = 7
+    advanced = AdvancedMinimaxAgent(depth=depth)
+    greedy = GreedyAgent()
+
+    while not game_viz.game_over and move_count < 100:
+        a1 = advanced.get_action(state, 1)
+        a2 = greedy.get_action(state, 2)
+        state, reward, done = game_viz.step(a1, a2)
+        move_count += 1
+
+    winner = "AdvMinimax" if game_viz.winner == 1 else ("Greedy" if game_viz.winner == 2 else "Draw")
+    print(f"Visualized game: {winner} wins!")
+    game_viz.close()
 ```
 
 ### Reflection Questions
