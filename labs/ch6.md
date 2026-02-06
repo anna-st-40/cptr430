@@ -5,11 +5,8 @@
 
 By the end of this lab, you will be able to:
 
-1. **Identify** the components of a constraint satisfaction problem (variables, domains, constraints) in the context of Sudoku
+1. **Understand** the components of a constraint satisfaction problem (variables, domains, constraints) in the context of Sudoku
 2. **Distinguish** between different search strategies (backtracking, forward checking, constraint propagation) and their computational trade-offs
-3. **Analyze** how constraint propagation techniques like arc consistency reduce the search space before and during search
-4. **Compare** the effectiveness of different variable ordering and value ordering heuristics in reducing search complexity
-5. **Understand** why local search methods can struggle with constraint satisfaction despite being effective for optimization problems
 
 ## Lab Overview
 
@@ -26,8 +23,7 @@ Rather than implementing these algorithms yourself, you'll run complete implemen
 
 **Setup Requirements:**
 - Python 3.10+
-- Libraries: `copy`, `time`, `random`
-- No external dependencies required
+- Libraries: `copy`, `time`, `random`, `z3`
 
 Each exercise demonstrates a different CSP solving technique, building from simple constraint checking to sophisticated arc consistency algorithms. By observing these implementations, you'll understand the theoretical concepts from the textbook in concrete, executable form.
 
@@ -222,9 +218,7 @@ for cell in empty_cells[:5]:
 
 1. Sudoku has 81 variables (cells) but only 27 constraints (9 rows + 9 columns + 9 boxes). Explain why each constraint actually represents multiple binary constraints between pairs of cells. How many total binary constraints exist in a 9×9 Sudoku?
 
-2. The domain of an empty cell starts as {1,2,3,4,5,6,7,8,9}, but we could immediately reduce it by looking at neighbors. Why doesn't the basic CSP representation do this reduction in the initialization? What are the trade-offs between eager versus lazy domain reduction?
-
-3. A Sudoku puzzle is only solvable if it has exactly one solution. From a CSP perspective, what would it mean for a puzzle to have zero solutions versus multiple solutions? How would you detect these conditions?
+2. A Sudoku puzzle is only solvable if it has exactly one solution. From a CSP perspective, what would it mean for a puzzle to have zero solutions versus multiple solutions? How would you detect these conditions?
 
 ---
 
@@ -384,11 +378,11 @@ print(f"Efficiency ratio: {solver2.backtracks / max(1, solver2.assignments):.2%}
 
 ### Reflection Questions
 
-4. Naive backtracking explores the search tree depth-first without any lookahead. Describe a scenario where this leads to significant wasted work—specifically, where the algorithm makes many assignments before discovering a conflict that could have been detected earlier.
+3. Naive backtracking explores the search tree depth-first without any lookahead. Describe a scenario where this leads to significant wasted work—specifically, where the algorithm makes many assignments before discovering a conflict that could have been detected earlier.
 
-5. The solver selects variables in a fixed order (left-to-right, top-to-bottom). Explain why this ordering is arbitrary and potentially inefficient. What information about the CSP state would be useful for choosing which variable to assign next?
+4. The solver selects variables in a fixed order (left-to-right, top-to-bottom). Explain why this ordering is arbitrary and potentially inefficient. What information about the CSP state would be useful for choosing which variable to assign next?
 
-6. Notice that the number of assignments grows dramatically for harder puzzles. Using the branching factor concept, explain why CSP search complexity is exponential. If each empty cell has an average of 5 possible values, approximately how many nodes would be explored in the worst case for a puzzle with 50 empty cells?
+5. Notice that the number of assignments grows dramatically for harder puzzles. Using the branching factor concept, explain why CSP search complexity is exponential. If each empty cell has an average of 5 possible values, approximately how many nodes would be explored in the worst case for a puzzle with 50 empty cells?
 
 ---
 
@@ -561,11 +555,9 @@ print(f"{'Backtracks':<25} {solver_naive.backtracks:<15} {solver.backtracks:<15}
 
 ### Reflection Questions
 
-7. Forward checking maintains arc consistency between the current variable and its neighbors. Explain what happens when a neighbor's domain becomes empty (domain wipeout). Why is this more efficient than discovering the conflict through multiple future assignments?
+6. Forward checking maintains arc consistency between the current variable and its neighbors. Explain what happens when a neighbor's domain becomes empty (domain wipeout). Why is this more efficient than discovering the conflict through multiple future assignments?
 
-8. The solver saves and restores domains when backtracking. Describe why this bookkeeping is necessary for forward checking but not for naive backtracking. What would go wrong if we didn't restore domains?
-
-9. Notice the "domain reductions" metric. Each reduction eliminates a potential branch of the search tree. Calculate approximately how many search nodes were pruned by forward checking in the example. How does this relate to the speedup observed?
+7. Notice the "domain reductions" metric. Each reduction eliminates a potential branch of the search tree. Calculate approximately how many search nodes were pruned by forward checking in the example. How does this relate to the speedup observed?
 
 ---
 
@@ -800,11 +792,11 @@ else:
 
 ### Reflection Questions
 
-10. AC-3 maintains arc consistency by ensuring every value in a variable's domain has "support" in neighboring domains. Explain why this is stronger than forward checking. Give a concrete example where AC-3 would reduce a domain but forward checking would not.
+8. AC-3 maintains arc consistency by ensuring every value in a variable's domain has "support" in neighboring domains. Explain why this is stronger than forward checking. Give a concrete example where AC-3 would reduce a domain but forward checking would not.
 
-11. The AC-3 algorithm uses a queue to process arcs. Explain why arcs must be re-added to the queue when domains change. What would happen if we only processed each arc once without re-queuing?
+9. The AC-3 algorithm uses a queue to process arcs. Explain why arcs must be re-added to the queue when domains change. What would happen if we only processed each arc once without re-queuing?
 
-12. Some easy Sudoku puzzles can be solved by AC-3 alone without any search. Explain what this reveals about the puzzle's structure. What property must a puzzle have for AC-3 to solve it completely through constraint propagation?
+10. Some easy Sudoku puzzles can be solved by AC-3 alone without any search. Explain what this reveals about the puzzle's structure. What property must a puzzle have for AC-3 to solve it completely through constraint propagation?
 
 ---
 
@@ -1015,11 +1007,11 @@ for name, SolverClass in approaches.items():
 
 ### Reflection Questions
 
-13. The MRV heuristic chooses the "most constrained" variable first, which seems counterintuitive—why tackle the hardest decisions first? Explain the "fail-first" principle and how detecting failures early reduces total search effort.
+11. The MRV heuristic chooses the "most constrained" variable first, which seems counterintuitive—why tackle the hardest decisions first? Explain the "fail-first" principle and how detecting failures early reduces total search effort.
 
-14. The LCV heuristic orders values by how little they constrain neighbors. Describe the philosophical difference between MRV (fail-first for variables) and LCV (succeed-first for values). Why do these opposite strategies work well together?
+12. The LCV heuristic orders values by how little they constrain neighbors. Describe the philosophical difference between MRV (fail-first for variables) and LCV (succeed-first for values). Why do these opposite strategies work well together?
 
-15. The degree heuristic breaks ties in MRV by choosing variables with the most unassigned neighbors. Explain the reasoning: why would constraining more variables make a variable selection better? Consider both immediate effects and future search reduction.
+13. The degree heuristic breaks ties in MRV by choosing variables with the most unassigned neighbors. Explain the reasoning: why would constraining more variables make a variable selection better? Consider both immediate effects and future search reduction.
 
 ---
 
@@ -1166,11 +1158,11 @@ for solver_name in results:
 
 ### Reflection Questions
 
-16. Observe how the performance gap between naive backtracking and intelligent techniques grows with puzzle difficulty. Explain why the benefit of heuristics and constraint propagation is more pronounced on harder puzzles. What does this reveal about the structure of the search space?
+14. Observe how the performance gap between naive backtracking and intelligent techniques grows with puzzle difficulty. Explain why the benefit of heuristics and constraint propagation is more pronounced on harder puzzles. What does this reveal about the structure of the search space?
 
-17. The "hard" puzzle has only 21 givens compared to 36 for the easy puzzle. Discuss why fewer givens doesn't always mean harder—the pattern and distribution of givens matters. What makes a Sudoku puzzle truly "hard" from a CSP perspective?
+15. The "hard" puzzle has only 21 givens compared to 36 for the easy puzzle. Discuss why fewer givens doesn't always mean harder—the pattern and distribution of givens matters. What makes a Sudoku puzzle truly "hard" from a CSP perspective?
 
-18. If you were building a production Sudoku solver, which combination of techniques would you choose? Consider the trade-off between implementation complexity, computational cost, and solving power. Would you use the same configuration for all puzzles or adapt based on puzzle characteristics?
+16. If you were building a production Sudoku solver, which combination of techniques would you choose? Consider the trade-off between implementation complexity, computational cost, and solving power. Would you use the same configuration for all puzzles or adapt based on puzzle characteristics?
 
 ---
 
@@ -1387,14 +1379,187 @@ print(f"\nConclusion: Local search struggles with CSPs that require exact soluti
 
 ### Reflection Questions
 
-19. Local search can get stuck in local optima where no single cell change reduces conflicts, even though the global optimum (zero conflicts) exists. Explain why this happens more frequently in CSPs than in optimization problems where approximate solutions are acceptable.
+17. Local search can get stuck in local optima where no single cell change reduces conflicts, even though the global optimum (zero conflicts) exists. Explain why this happens more frequently in CSPs than in optimization problems where approximate solutions are acceptable.
 
-20. The min-conflicts heuristic chooses values that minimize immediate conflicts. Compare this greedy, local decision-making to backtracking's systematic exploration. Why does backtracking's ability to undo multiple decisions give it an advantage for CSPs?
+18. The min-conflicts heuristic chooses values that minimize immediate conflicts. Compare this greedy, local decision-making to backtracking's systematic exploration. Why does backtracking's ability to undo multiple decisions give it an advantage for CSPs?
 
-21. Local search performs well for some CSPs (like N-queens) but poorly for Sudoku. Hypothesize about what properties make a CSP amenable to local search versus requiring systematic search. Consider factors like constraint density, solution density, and landscape topology.
+19. Local search performs well for some CSPs (like N-queens) but poorly for Sudoku. Hypothesize about what properties make a CSP amenable to local search versus requiring systematic search. Consider factors like constraint density, solution density, and landscape topology.
 
 ---
 
+## Exercise 7: SMT Solving with Z3
+
+### Description
+
+While the previous exercises explored search-based CSP solving techniques, modern constraint solvers can use fundamentally different approaches. Z3 is an SMT (Satisfiability Modulo Theories) solver that uses sophisticated reasoning techniques including DPLL (Davis-Putnam-Logemann-Loveland), conflict-driven clause learning, and theory-specific decision procedures. This exercise demonstrates how declarative constraint specification with Z3 can solve Sudoku efficiently without explicit search code.
+
+### Key Concepts
+
+- **SMT Solving**: Determining satisfiability of logical formulas with respect to background theories (integers, arrays, etc.)
+- **Declarative specification**: Describing what constraints must hold rather than how to find solutions
+- **SAT/SMT techniques**: DPLL search with clause learning, backjumping, and unit propagation
+- **Distinct constraints**: Built-in support for all-different constraints common in CSPs
+- **Theory reasoning**: Leveraging specialized decision procedures for integer arithmetic
+
+### Task
+
+Run the Z3-based solver below and compare its approach to the search techniques from previous exercises. Install Z3 with: `pip install z3-solver`
+
+```python
+from z3 import *
+import time
+
+def solve_sudoku_z3(puzzle):
+    """
+    Solve Sudoku using Z3 SMT solver.
+    
+    Rather than implementing search ourselves, we declare constraints
+    and let Z3's sophisticated solver find a satisfying assignment.
+    """
+    
+    # Create 9x9 grid of integer variables
+    grid = [[Int(f"cell_{i}_{j}") for j in range(9)] for i in range(9)]
+    
+    s = Solver()
+    
+    # Constraint 1: Each cell is between 1 and 9
+    print("Adding domain constraints...")
+    for i in range(9):
+        for j in range(9):
+            s.add(And(grid[i][j] >= 1, grid[i][j] <= 9))
+    
+    # Constraint 2: Rows are distinct (no duplicates)
+    print("Adding row constraints...")
+    for i in range(9):
+        s.add(Distinct(grid[i]))
+    
+    # Constraint 3: Columns are distinct
+    print("Adding column constraints...")
+    for j in range(9):
+        s.add(Distinct([grid[i][j] for i in range(9)]))
+    
+    # Constraint 4: 3x3 boxes are distinct
+    print("Adding box constraints...")
+    for box_i in range(3):
+        for box_j in range(3):
+            cells = [grid[i][j] 
+                     for i in range(box_i*3, box_i*3+3)
+                     for j in range(box_j*3, box_j*3+3)]
+            s.add(Distinct(cells))
+    
+    # Constraint 5: Fix given cells
+    print("Adding given values...")
+    givens = 0
+    for i in range(9):
+        for j in range(9):
+            if puzzle[i][j] != 0:
+                s.add(grid[i][j] == puzzle[i][j])
+                givens += 1
+    
+    print(f"Total givens: {givens}")
+    print(f"Total constraints added: {len(s.assertions())}")
+    print("\nSolving with Z3...")
+    
+    # Solve
+    start = time.time()
+    result = s.check()
+    elapsed = time.time() - start
+    
+    if result == sat:
+        m = s.model()
+        print(f"✓ Solution found in {elapsed:.4f}s")
+        
+        # Extract solution
+        solution = [[0]*9 for _ in range(9)]
+        for i in range(9):
+            for j in range(9):
+                solution[i][j] = m.evaluate(grid[i][j]).as_long()
+        
+        return solution, elapsed, True
+    else:
+        print(f"✗ No solution exists")
+        return None, elapsed, False
+
+def print_sudoku(puzzle, title="Sudoku"):
+    """Pretty print the puzzle"""
+    print(f"\n{title}")
+    print("─" * 25)
+    for i in range(9):
+        if i > 0 and i % 3 == 0:
+            print("─" * 25)
+        row_str = ""
+        for j in range(9):
+            if j > 0 and j % 3 == 0:
+                row_str += "│ "
+            val = puzzle[i][j]
+            row_str += str(val) if val != 0 else "."
+            row_str += " "
+        print(row_str)
+    print()
+
+# Test on puzzles of varying difficulty
+print("=== Z3 SMT Solver for Sudoku ===\n")
+
+# Easy puzzle
+easy_puzzle = [
+    [5, 3, 0, 0, 7, 0, 0, 0, 0],
+    [6, 0, 0, 1, 9, 5, 0, 0, 0],
+    [0, 9, 8, 0, 0, 0, 0, 6, 0],
+    [8, 0, 0, 0, 6, 0, 0, 0, 3],
+    [4, 0, 0, 8, 0, 3, 0, 0, 1],
+    [7, 0, 0, 0, 2, 0, 0, 0, 6],
+    [0, 6, 0, 0, 0, 0, 2, 8, 0],
+    [0, 0, 0, 4, 1, 9, 0, 0, 5],
+    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+]
+
+print_sudoku(easy_puzzle, "Easy Puzzle (36 givens)")
+solution, time_easy, solved = solve_sudoku_z3(easy_puzzle)
+if solved:
+    print_sudoku(solution, "Solution")
+
+# Hard puzzle
+hard_puzzle = [
+    [0, 0, 0, 0, 0, 0, 6, 8, 0],
+    [0, 0, 0, 0, 7, 3, 0, 0, 9],
+    [3, 0, 9, 0, 0, 0, 0, 4, 5],
+    [4, 9, 0, 0, 0, 0, 0, 0, 0],
+    [8, 0, 3, 0, 5, 0, 9, 0, 2],
+    [0, 0, 0, 0, 0, 0, 0, 3, 6],
+    [9, 6, 0, 0, 0, 0, 3, 0, 8],
+    [7, 0, 0, 6, 8, 0, 0, 0, 0],
+    [0, 2, 8, 0, 0, 0, 0, 0, 0]
+]
+
+print("\n" + "="*50 + "\n")
+print_sudoku(hard_puzzle, "Hard Puzzle (21 givens)")
+solution, time_hard, solved = solve_sudoku_z3(hard_puzzle)
+if solved:
+    print_sudoku(solution, "Solution")
+
+# Analysis
+print("\n=== Z3 Performance Summary ===\n")
+print(f"Easy puzzle: {time_easy:.4f}s")
+print(f"Hard puzzle: {time_hard:.4f}s")
+print(f"Ratio: {time_hard/time_easy:.2f}x")
+
+print("\n--- Key Observations ---\n")
+print("1. Z3 handles both puzzles efficiently despite difficulty difference")
+print("2. Declarative specification: we state constraints, not search strategy")
+print("3. Z3 uses sophisticated techniques (clause learning, backjumping)")
+print("4. Built-in Distinct() constraint is optimized for all-different")
+print("5. No explicit variable ordering or value selection needed")
+```
+
+### Reflection Questions
+
+20. Z3 uses a declarative approach where you specify constraints and let the solver find solutions. Compare this to the procedural backtracking approaches from earlier exercises. What are the advantages and disadvantages of each paradigm for solving CSPs?
+
+21. The Distinct() constraint in Z3 is a built-in primitive that handles "all different" efficiently. Earlier exercises checked constraints pairwise manually. Explain how a solver could optimize the Distinct() constraint internally using techniques beyond pairwise checking. Consider arc consistency and conflict analysis.
+
+22. Z3 uses techniques like conflict-driven clause learning (CDCL) which learns from failures to avoid repeating similar mistakes. Compare this to plain backtracking which forgets why branches failed. How does learning from conflicts relate to the constraint propagation and heuristics you've explored in previous exercises?
+
+---
 
 ## Submission Instructions
 
