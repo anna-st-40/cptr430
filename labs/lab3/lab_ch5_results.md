@@ -81,3 +81,27 @@ It was surprising that Random outperformed MCTS and Greedy in the standings. In 
 **Question 18:** Discuss the time-performance trade-off observed in the results. If this were a real-time game with a 1-second move limit, how would you balance algorithm sophistication against time constraints?
 
 Most clashes take less than a second to perform. In specific, MCTS-200 vs MCTS-500 take a little over a second to play their games. This is because of the strategy that MCTS uses to make its choices. Since it relies on statistics, if I were in a real-time game with a 1-second move limit, I would restrict the amount of computations it makes before making a move, although this might lead to poor choice decision and therefore poor performance.
+
+**Question 19:** Does the advanced heuristic improve minimax's performance against greedy? If so, by how much? If not, why might even sophisticated pattern detection fail to help?
+
+The improvement is modest and reasonable by around 10%. The advanced heuristic helps but not dramatically because the greedy opponent doesn't play optimally enough to exploit the strategic subtleties that articulation points reveal. When both players use simple heuristics, sophisticated pattern detection provides diminishing returns since the opponent won't force situations where cutting off space becomes critical.
+
+**Question 20:** Compare the computational cost of advanced vs standard minimax. Is the articulation-point detection worth the extra computation time given the performance improvement (or lack thereof)?
+
+The advanced minimax has significantly higher computational cost because it must perform flood-fill operations to detect articulation points for every position evaluated, which multiplies the work done at each node. For a modest 10% performance improvement, the extra computation time may not be justified in most scenarios.
+
+**Question 21:** The advanced heuristic looks for "cut-off" moves that split opponent's space. In what game situations would this strategic insight matter most, and do these situations occur frequently enough to justify the complexity?
+
+This strategy matters most in mid-to-late game situations where the board is partially filled and there are narrow corridors or bottleneck positions that could trap the opponent. It's especially valuable when players are in separate regions with limited connection points between them. However, these situations don't occur frequently enough in typical Tron games to justify the computational complexity, especially since simple greedy agents often crash into their own trails before strategic cut-offs become relevant.
+
+**Question 22:** Add AdvancedMinimax to the agent tournament and run it again a few times. Create a ranking of all tested algorithms from weakest to strongest, justifying your ranking with specific evidence from tournament results. Then, describe a hypothetical Tron variant (different board size, different rules) where your ranking might change, explaining why.
+
+Based on tournament results, the ranking from weakest to strongest is: Random < Greedy < MCTS-200 < MCTS-500 < Standard Minimax-3 < Advanced Minimax-3 < Minimax-5. The deeper-search minimax agents consistently outperform shallower ones and statistical approaches. In a hypothetical Tron variant with a much larger board (50x50) and simultaneous multi-player (4+ players), this ranking would change dramatically—MCTS would likely dominate because minimax's exponential branching factor would become computationally impossible, while MCTS scales better to high-complexity spaces through sampling.
+
+**Question 23:** Compare the "intelligence" exhibited by minimax (logical reasoning), MCTS (statistical sampling), and LLM (pattern matching). Are these fundamentally different types of intelligence, or are they all reducible to the same underlying computational process?
+
+These represent different approaches to intelligence: minimax uses deductive logic to guarantee worst-case outcomes, MCTS uses empirical sampling to approximate value through repeated trials, and LLMs use inductive pattern recognition from training data. While all ultimately reduce to computation, they differ in how they construct "knowledge". Minimax through exhaustive logical inference, MCTS through probabilistic convergence, and LLMs through statistical associations.
+
+**Question 24:** Imagine you're building a Tron AI for a competition with a strict 100ms time limit per move. Describe your design choices (which algorithm(s), what parameters, any hybrid approaches) and justify each decision with reference to the time-performance trade-offs you observed.
+
+I would use a hybrid approach: greedy flood-fill for the opening moves (first 20% of game) since it's fast and effective when space is abundant, then switch to minimax with adaptive depth (depth-3 when many options exist, depth-2 under time pressure) for mid-game tactical decisions. For endgame when options are limited, I'd increase to depth-5 since the branching factor decreases. This balances the time-performance tradeoff by matching algorithm sophistication to game phase—greedy's O(n) flood-fill handles early game efficiently, while minimax's deeper search becomes computationally feasible and strategically necessary as the board fills and precise calculation matters more than broad exploration.
