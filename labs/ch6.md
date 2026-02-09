@@ -27,6 +27,48 @@ Rather than implementing these algorithms yourself, you'll run complete implemen
 
 Each exercise demonstrates a different CSP solving technique, building from simple constraint checking to sophisticated arc consistency algorithms. By observing these implementations, you'll understand the theoretical concepts from the textbook in concrete, executable form.
 
+I suggest running the following commands from your base user directory:
+
+
+```bash
+mkdir cs430 
+cd cs430 
+uv init 
+uv add z3
+source .venv/bin/activate
+touch sudoku.ipynb
+```
+
+The last command will create a file such as `sudoku.ipynb`. 
+
+---
+
+#### uv
+
+I highly recommend uv (https://docs.astral.sh/uv/). It (according to their docs):
+
+- 🚀 Is a single tool to replace pip, pip-tools, pipx, poetry, pyenv, twine, virtualenv, and more.
+- ⚡️ Is 10-100x faster than pip.
+- 🗂️ Provides comprehensive project management, with a universal lockfile.
+- ❇️ Runs scripts, with support for inline dependency metadata.
+- 🐍 Installs and manages Python versions.
+
+---
+
+#### Jupyter Notebook
+
+This lab is designed to be run in a Jupyter notebook environment, because the examples build progressively.
+
+Select the virtual environment created by `uv`` (`cs430`) as the kernel for your Jupyter notebook.
+
+Paste the code for each exercise in a new code cell.
+
+If you can't use Jupyter Notebook for whatever reason, just build up a regular Python program, and ignore output from earlier exercises.
+
+#### Submission 
+
+Make sure to record your answers to *all* reflections to submit at the end of the lab!
+
 ---
 
 ## Exercise 1: Understanding the CSP Formulation
