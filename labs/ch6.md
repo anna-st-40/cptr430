@@ -75,6 +75,7 @@ class SudokuCSP:
                 else:
                     # Given cell: domain is fixed value
                     self.domains[(i, j)] = {puzzle[i][j]}
+        self.apply_initial_constraints()
     
     def get_row_neighbors(self, row, col):
         """Get all cells in the same row"""
@@ -152,6 +153,19 @@ class SudokuCSP:
                 row_str += " "
             print(row_str)
         print()
+
+    def apply_initial_constraints(self):
+        """Reduce domains based on existing values"""
+        for (i, j), domain in self.domains.items():
+            if len(domain) == 1:  # Skip given values
+                continue
+            
+            # Remove values that appear in neighbors
+            for neighbor in self.get_all_neighbors(i, j):
+                ni, nj = neighbor
+                if len(self.domains[(ni, nj)]) == 1:
+                    assigned_value = next(iter(self.domains[(ni, nj)]))
+                    domain.discard(assigned_value)
 
 # Demonstration: Easy 4x4 Sudoku (for clarity)
 print("=== CSP Formulation of Sudoku ===\n")
