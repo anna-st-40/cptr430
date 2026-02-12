@@ -641,167 +641,154 @@ Run the AC-3 implementation and observe:
 
 ```python
 from collections import deque
+from copy import deepcopy
+import time
 
 class AC3Solver:
-    """Constraint propagation using AC-3 algorithm"""
-    
     def __init__(self, csp):
         self.csp = csp
         self.assignments = 0
         self.backtracks = 0
         self.arc_revisions = 0
         self.propagation_rounds = 0
-    
+
     def solve(self):
-        """Solve using AC-3 + backtracking"""
         self.assignments = 0
         self.backtracks = 0
         self.arc_revisions = 0
         self.propagation_rounds = 0
-        
+
         start_time = time.time()
-        
-        # Run AC-3 as preprocessing
-        print("Running AC-3 constraint propagation...")
-        consistent = self.ac3()
-        
-        if not consistent:
-            print("Puzzle is inconsistent!")
+
+        # Initial AC-3 preprocessing
+        if not self.ac3():
             return False, time.time() - start_time
-        
-        print(f"AC-3 completed: {self.arc_revisions} arc revisions\n")
-        
-        # Check if AC-3 alone solved it
-        if self.csp.is_complete():
-            print("Solved by AC-3 alone (no search needed)!")
-            elapsed = time.time() - start_time
-            return True, elapsed
-        
-        # Need search for remaining cells
-        print("AC-3 insufficient, starting backtracking search...\n")
+
+        # If domains are all singletons, fill puzzle
+        if self._all_domains_singleton():
+            self._commit_domains_to_puzzle()
+            return True, time.time() - start_time
+
+        # Otherwise, search
         result = self._backtrack()
-        elapsed = time.time() - start_time
-        return result, elapsed
-    
+        return result, time.time() - start_time
+
+    # -----------------------------------------------------
+    # AC-3 Core
+    # -----------------------------------------------------
+
     def ac3(self, arcs=None):
         """
-        AC-3 algorithm for enforcing arc consistency.
-        Returns False if inconsistency detected, True otherwise.
+        Enforce arc consistency.
+        Returns False if any domain becomes empty.
         """
-        # Initialize queue with all arcs
         if arcs is None:
             queue = deque()
-            for i in range(self.csp.size):
-                for j in range(self.csp.size):
-                    if self.csp.puzzle[i][j] == 0:
-                        for neighbor in self.csp.get_all_neighbors(i, j):
-                            queue.append(((i, j), neighbor))
+
+            # Add all arcs (Xi, Xj) where Xi and Xj are neighbors
+            for Xi in self.csp.domains:
+                for Xj in self.csp.get_all_neighbors(*Xi):
+                    queue.append((Xi, Xj))
         else:
             queue = deque(arcs)
-        
+
         while queue:
             self.propagation_rounds += 1
-            (Xi, Xj) = queue.popleft()
-            
-            # Revise domain of Xi based on Xj
+            Xi, Xj = queue.popleft()
+
             if self._revise(Xi, Xj):
-                # Domain of Xi was reduced
                 if len(self.csp.domains[Xi]) == 0:
                     return False  # Inconsistency detected
-                
-                # If domain changed, re-check all neighbors of Xi
+
+                # If domain changed, re-add all neighbors except Xj
                 for Xk in self.csp.get_all_neighbors(*Xi):
                     if Xk != Xj:
                         queue.append((Xk, Xi))
-        
+
         return True
-    
+
     def _revise(self, Xi, Xj):
         """
         Make Xi arc-consistent with Xj.
-        Remove values from Xi's domain that have no support in Xj's domain.
-        Returns True if domain was revised.
+        Remove values from Xi's domain that have no support in Xj.
         """
-        self.arc_revisions += 1
         revised = False
-        
-        # If Xj is assigned, remove that value from Xi's domain
-        xi_row, xi_col = Xi
-        xj_row, xj_col = Xj
-        
-        if self.csp.puzzle[xj_row][xj_col] != 0:
-            # Xj is assigned - remove its value from Xi
-            assigned_value = self.csp.puzzle[xj_row][xj_col]
-            if assigned_value in self.csp.domains[Xi]:
-                self.csp.domains[Xi].discard(assigned_value)
-                revised = True
-        else:
-            # Xj is unassigned - check for support
-            values_to_remove = set()
-            for value in self.csp.domains[Xi]:
-                # Check if value has support in Xj's domain
-                has_support = False
-                for xj_value in self.csp.domains[Xj]:
-                    if value != xj_value:  # Different values (constraint)
-                        has_support = True
-                        break
-                
-                if not has_support:
-                    values_to_remove.add(value)
-                    revised = True
-            
+        self.arc_revisions += 1
+
+        values_to_remove = set()
+
+        for x in self.csp.domains[Xi]:
+            # Check if there exists some y in Xj domain such that x != y
+            if not any(x != y for y in self.csp.domains[Xj]):
+                values_to_remove.add(x)
+
+        if values_to_remove:
             self.csp.domains[Xi] -= values_to_remove
-        
-        # Singleton domain: assign it immediately
-        if len(self.csp.domains[Xi]) == 1:
-            value = list(self.csp.domains[Xi])[0]
-            if self.csp.puzzle[xi_row][xi_col] == 0:
-                self.csp.puzzle[xi_row][xi_col] = value
-                revised = True
-        
+            revised = True
+
         return revised
-    
+
+    # -----------------------------------------------------
+    # Backtracking Search with AC-3 Propagation
+    # -----------------------------------------------------
+
     def _backtrack(self):
-        """Backtracking with AC-3 after each assignment"""
-        if self.csp.is_complete():
+        if self._all_domains_singleton():
+            self._commit_domains_to_puzzle()
             return True
-        
+
         var = self._select_unassigned_variable()
         if var is None:
             return True
-        
-        row, col = var
-        
-        for value in list(self.csp.domains[(row, col)]):
+
+        for value in list(self.csp.domains[var]):
             self.assignments += 1
-            
-            if self.csp.is_consistent(row, col, value):
-                self.csp.puzzle[row][col] = value
-                saved_domains = deepcopy(self.csp.domains)
-                
-                # Update domain and run AC-3
-                self.csp.domains[(row, col)] = {value}
-                
-                # Propagate constraints
-                arcs = [((n[0], n[1]), (row, col)) for n in self.csp.get_all_neighbors(row, col)]
-                if self.ac3(arcs):
-                    result = self._backtrack()
-                    if result:
-                        return True
-                
-                self.csp.domains = saved_domains
-                self.csp.puzzle[row][col] = 0
-                self.backtracks += 1
-        
+
+            # Save state
+            saved_domains = deepcopy(self.csp.domains)
+
+            # Assign by reducing domain to singleton
+            self.csp.domains[var] = {value}
+
+            # Run AC-3 with affected arcs only
+            arcs = [(neighbor, var)
+                    for neighbor in self.csp.get_all_neighbors(*var)]
+
+            if self.ac3(arcs):
+                result = self._backtrack()
+                if result:
+                    return True
+
+            # Restore state
+            self.csp.domains = saved_domains
+            self.backtracks += 1
+
         return False
-    
+
+    # -----------------------------------------------------
+    # Helpers
+    # -----------------------------------------------------
+
     def _select_unassigned_variable(self):
-        """Select unassigned variable"""
-        for i in range(self.csp.size):
-            for j in range(self.csp.size):
-                if self.csp.puzzle[i][j] == 0:
-                    return (i, j)
+        """
+        Simple variable selection:
+        choose variable with domain size > 1.
+        """
+        for var, domain in self.csp.domains.items():
+            if len(domain) > 1:
+                return var
         return None
+
+    def _all_domains_singleton(self):
+        return all(len(domain) == 1 for domain in self.csp.domains.values())
+
+    def _commit_domains_to_puzzle(self):
+        """
+        After solving, copy domains into puzzle grid.
+        """
+        for (i, j), domain in self.csp.domains.items():
+            self.csp.puzzle[i][j] = next(iter(domain))
+
 
 # Test AC-3
 print("=== AC-3 Constraint Propagation ===\n")
@@ -1160,6 +1147,18 @@ easy_puzzle = [
 ]
 
 medium_puzzle = [
+    [0, 0, 0, 0, 0, 0, 6, 8, 0],
+    [0, 0, 0, 0, 7, 3, 0, 0, 9],
+    [3, 0, 9, 0, 0, 0, 0, 4, 5],
+    [4, 9, 0, 0, 0, 0, 0, 0, 0],
+    [8, 0, 3, 0, 5, 0, 9, 0, 2],
+    [0, 0, 0, 0, 0, 0, 0, 3, 6],
+    [9, 6, 0, 0, 0, 0, 3, 0, 8],
+    [7, 0, 0, 6, 8, 0, 0, 0, 0],
+    [0, 2, 8, 0, 0, 0, 0, 0, 0]
+]
+
+hard_puzzle = [
     [0, 0, 0, 6, 0, 0, 4, 0, 0],
     [7, 0, 0, 0, 0, 3, 6, 0, 0],
     [0, 0, 0, 0, 9, 1, 0, 8, 0],
@@ -1169,18 +1168,6 @@ medium_puzzle = [
     [0, 4, 0, 2, 0, 0, 0, 6, 0],
     [9, 0, 3, 0, 0, 0, 0, 0, 0],
     [0, 2, 0, 0, 0, 0, 1, 0, 0]
-]
-
-hard_puzzle = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 3, 0, 8, 5],
-    [0, 0, 1, 0, 2, 0, 0, 0, 0],
-    [0, 0, 0, 5, 0, 7, 0, 0, 0],
-    [0, 0, 4, 0, 0, 0, 1, 0, 0],
-    [0, 9, 0, 0, 0, 0, 0, 0, 0],
-    [5, 0, 0, 0, 0, 0, 0, 7, 3],
-    [0, 0, 2, 0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 4, 0, 0, 0, 9]
 ]
 
 print("=== Comprehensive Performance Benchmark ===")
