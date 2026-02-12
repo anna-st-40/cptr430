@@ -1,3 +1,7 @@
+# Names: Jaime Garcia, Anna Stefaniv Oickle
+# Lab: Lab Chapter 6
+# Date: Feb 12, 2026
+
 **Question 1:** Sudoku has 81 variables (cells) but only 27 constraints (9 rows + 9 columns + 9 boxes). Explain why each constraint actually represents multiple binary constraints between pairs of cells. How many total binary constraints exist in a 9×9 Sudoku?
 
 We have one constraint per row, column and box. However, each constraint has 36 binary constraints representing every possible combination of two numbers, calculates by the combinations formula. So, the total number of binary constraints that exist in a 9x9 Sudoku grid is 27x36 = 972.
