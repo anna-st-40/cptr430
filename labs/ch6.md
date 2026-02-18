@@ -23,7 +23,7 @@ Rather than implementing these algorithms yourself, you'll run complete implemen
 
 **Setup Requirements:**
 - Python 3.10+
-- Libraries: `copy`, `time`, `random`, `z3`
+- Libraries: `copy`, `time`, `random`, `z3-solver`
 
 Each exercise demonstrates a different CSP solving technique, building from simple constraint checking to sophisticated arc consistency algorithms. By observing these implementations, you'll understand the theoretical concepts from the textbook in concrete, executable form.
 
@@ -34,7 +34,7 @@ I suggest running the following commands from your base user directory:
 mkdir cs430 
 cd cs430 
 uv init 
-uv add z3
+uv add z3-solver
 source .venv/bin/activate
 touch sudoku.ipynb
 ```
