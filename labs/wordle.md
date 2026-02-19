@@ -21,16 +21,14 @@ Wordle provides an excellent environment for studying AI decision-making because
 **Setup Requirements:**
 - Python 3.10+
 - Libraries: `collections`, `math`, `random`, `json`, `nltk`
-- Optional: Ollama with `deepseek-r1` model for RL demonstrations
+- Optional: Ollama with `llama3.2` model for RL demonstrations
 - Run once: `nltk.download('words')` to download the word corpus
 
 Each exercise demonstrates a different agent strategy, allowing you to observe how theoretical concepts from search, game theory, and learning manifest in concrete decision-making.
 
 ---
 
-
 I suggest running the following commands from your base user directory:
-
 
 ```bash
 mkdir cs430 
@@ -41,7 +39,7 @@ source .venv/bin/activate
 touch wordle.ipynb
 ```
 
-The last command will create a file such as `sudoku.ipynb`. 
+The last command will create a file such as `wordle.ipynb`. 
 
 ---
 
@@ -196,11 +194,9 @@ print(f"\nFrom full word list, {len([w for w in WORD_LIST if apply_constraints(w
 
 ### Reflection Questions
 
-1. Why does the algorithm mark green letters before yellow letters? What would go wrong if we reversed this order, especially with words containing repeated letters?
+1. In the constraint propagation example, explain the relationship between the pattern encoding and the reduction in state space. How does each piece of information (gray, yellow, green) contribute differently to narrowing possibilities?
 
-2. In the constraint propagation example, explain the relationship between the pattern encoding and the reduction in state space. How does each piece of information (gray, yellow, green) contribute differently to narrowing possibilities?
-
-3. The feedback mechanism is deterministic—the same guess against the same answer always produces the same pattern. How does this property affect the agent strategies we'll explore? Would probabilistic feedback change the problem fundamentally?
+2. The feedback mechanism is deterministic—the same guess against the same answer always produces the same pattern. How does this property affect the agent strategies we'll explore? Would probabilistic feedback change the problem fundamentally?
 
 ---
 
@@ -331,11 +327,11 @@ for i, (word, score) in enumerate(all_scores[:10], 1):
 
 ### Reflection Questions
 
-4. The frequency agent uses a "greedy" approach—it always picks what seems best locally without considering future moves. Describe a scenario where this could lead to suboptimal performance compared to an agent that thinks ahead.
+3. The frequency agent uses a "greedy" approach—it always picks what seems best locally without considering future moves. Describe a scenario where this could lead to suboptimal performance compared to an agent that thinks ahead.
 
-5. Notice how the unique letter bonus affects word selection. Why might choosing words with five distinct letters be advantageous in early guesses but potentially wasteful in later guesses?
+4. Notice how the unique letter bonus affects word selection. Why might choosing words with five distinct letters be advantageous in early guesses but potentially wasteful in later guesses?
 
-6. This agent recalculates frequencies based on the remaining word list after each guess. How does this adaptive behavior differ from using fixed, pre-computed frequencies? What are the computational trade-offs?
+5. This agent recalculates frequencies based on the remaining word list after each guess. How does this adaptive behavior differ from using fixed, pre-computed frequencies? What are the computational trade-offs?
 
 ---
 
@@ -472,11 +468,11 @@ for word, entropy in entropy_scores[:5]:
 
 ### Reflection Questions
 
-7. Entropy measures how evenly a guess partitions the remaining possibilities. Explain why a guess that splits possibilities into equally-sized groups has higher entropy than one that creates very uneven partitions. Use a concrete example from the output.
+6. Entropy measures how evenly a guess partitions the remaining possibilities. Explain why a guess that splits possibilities into equally-sized groups has higher entropy than one that creates very uneven partitions. Use a concrete example from the output.
 
-8. The entropy agent might choose a word that cannot possibly be the answer if it maximizes information gain. Is this rational? Discuss the trade-off between "playing to win immediately" versus "playing to gather information."
+7. The entropy agent might choose a word that cannot possibly be the answer if it maximizes information gain. Is this rational? Discuss the trade-off between "playing to win immediately" versus "playing to gather information."
 
-9. Compare the computational complexity of the frequency heuristic versus entropy calculation. As the word list grows larger, which approach scales better and why? What does this tell us about the trade-off between optimality and feasibility?
+8. Compare the computational complexity of the frequency heuristic versus entropy calculation. As the word list grows larger, which approach scales better and why? What does this tell us about the trade-off between optimality and feasibility?
 
 ---
 
@@ -601,11 +597,11 @@ for word, max_part in minimax_ranked[:5]:
 
 ### Reflection Questions
 
-10. The minimax agent provides a guarantee: "No matter what the answer is, I'll have at most X words remaining after this guess." Why might this guarantee be valuable in competitive or time-limited scenarios even if average performance is worse?
+9. The minimax agent provides a guarantee: "No matter what the answer is, I'll have at most X words remaining after this guess." Why might this guarantee be valuable in competitive or time-limited scenarios even if average performance is worse?
 
-11. Observe cases where entropy and minimax choose different first words. Describe the philosophical difference in these strategies: one is optimistic (optimizing average case) and one is pessimistic (optimizing worst case). Which worldview seems more appropriate for Wordle, and why?
+10. Observe cases where entropy and minimax choose different first words. Describe the philosophical difference in these strategies: one is optimistic (optimizing average case) and one is pessimistic (optimizing worst case). Which worldview seems more appropriate for Wordle, and why?
 
-12. As the number of remaining possibilities decreases (e.g., down to 2-3 words), do you notice the strategies converging? Explain why different optimization criteria matter more when uncertainty is high versus low.
+11. As the number of remaining possibilities decreases (e.g., down to 2-3 words), do you notice the strategies converging? Explain why different optimization criteria matter more when uncertainty is high versus low.
 
 ---
 
@@ -678,30 +674,20 @@ def hybrid_agent_solve(answer, word_list, switch_threshold=5, verbose=True):
 print("=== Hybrid Strategy Agent ===\n")
 print("Strategy: Entropy when >5 words remain, Minimax otherwise\n")
 
-test_answers = ["CRANE", "ATONE", "STARE"]
+test_answers = ["DOWEL", "GNOME", "FUGUE"]
 for answer in test_answers:
     print(f"Target word: {answer}")
     result = hybrid_agent_solve(answer, WORD_LIST, switch_threshold=5)
-    print()
-
-# Experiment with different thresholds
-print("=== Threshold Sensitivity Analysis ===\n")
-answer = "ATONE"
-for threshold in [3, 5, 8]:
-    print(f"Switch threshold: {threshold}")
-    guesses = hybrid_agent_solve(answer, WORD_LIST, switch_threshold=threshold, verbose=False)
-    print(f"  Solved in {len(guesses)} guesses")
-    print(f"  Guesses: {' -> '.join(guesses)}")
     print()
 ```
 
 ### Reflection Questions
 
-13. The hybrid agent switches strategies mid-game. Describe what fundamentally changes about the problem when you have 10 remaining possibilities versus 2 remaining possibilities that justifies this strategy change.
+12. The hybrid agent switches strategies mid-game. Describe what fundamentally changes about the problem when you have 10 remaining possibilities versus 2 remaining possibilities that justifies this strategy change.
 
-14. The threshold parameter (when to switch strategies) is somewhat arbitrary. Propose a method for automatically determining the optimal threshold based on the statistical properties of the word list. What factors should influence this decision?
+13. The threshold parameter (when to switch strategies) is somewhat arbitrary. Propose a method for automatically determining the optimal threshold based on the statistical properties of the word list. What factors should influence this decision?
 
-15. Could we extend this hybrid approach to three or more strategies? Sketch out a meta-strategy that might incorporate frequency heuristics, entropy, and minimax at different stages. What would be the benefits and costs?
+14. Could we extend this hybrid approach to three or more strategies? Sketch out a meta-strategy that might incorporate frequency heuristics, entropy, and minimax at different stages. What would be the benefits and costs?
 
 ---
 
@@ -797,11 +783,11 @@ for letter, count in all_letters.most_common(10):
 
 ### Reflection Questions
 
-16. Examine the average versus worst-case performance across strategies. Does the "best on average" strategy also have the "best worst case"? Discuss why optimization criteria matter when choosing between algorithms.
+15. Examine the average versus worst-case performance across strategies. Does the "best on average" strategy also have the "best worst case"? Discuss why optimization criteria matter when choosing between algorithms.
 
-17. The benchmark uses a random sample of words. How might results differ if we tested on: (a) only common words, (b) words with unusual letter patterns, or (c) the full 12,000+ word dictionary? What does this reveal about the generalizability of our findings?
+16. The benchmark uses a random sample of words. How might results differ if we tested on: (a) only common words, (b) words with unusual letter patterns, or (c) the full 12,000+ word dictionary? What does this reveal about the generalizability of our findings?
 
-18. Notice the computational time differences between strategies. In a real-time game where players have limited thinking time, how should we balance solution quality against computation speed? Propose a practical decision rule.
+17. Notice the computational time differences between strategies. In a real-time game where players have limited thinking time, how should we balance solution quality against computation speed? Propose a practical decision rule.
 
 ---
 
@@ -809,7 +795,7 @@ for letter, count in all_letters.most_common(10):
 
 ### Description
 
-Unlike the previous rule-based agents, a reinforcement learning (RL) agent learns strategy through experience. Since training an RL agent from scratch is computationally intensive, we'll simulate RL decision-making using a language model (Ollama with DeepSeek-R1) that can reason about Wordle strategy. This demonstrates how modern AI can learn implicit strategies without explicit programming.
+Unlike the previous rule-based agents, a reinforcement learning (RL) agent learns strategy through experience. Since training an RL agent from scratch is computationally intensive, we'll simulate RL decision-making using a language model (Ollama with llama3.2) that can reason about Wordle strategy. This demonstrates how modern AI can learn implicit strategies without explicit programming.
 
 ### Key Concepts
 
@@ -821,7 +807,7 @@ Unlike the previous rule-based agents, a reinforcement learning (RL) agent learn
 
 ### Task
 
-**Note**: This requires Ollama installed with `deepseek-r1` model. If unavailable, read through the code to understand the approach.
+**Note**: This requires Ollama installed with `llama3.2` model. If unavailable, read through the code to understand the approach.
 
 Run the RL simulation and observe:
 - What strategy the model develops
@@ -849,7 +835,7 @@ def simulate_rl_agent_with_llm(answer, word_list, verbose=True):
     history = []
     
     if verbose:
-        print("=== Simulated RL Agent (via DeepSeek-R1) ===\n")
+        print("=== Simulated RL Agent (via llama3.2) ===\n")
     
     for attempt in range(6):
         # Build prompt with current game state
@@ -868,7 +854,6 @@ Respond with ONLY the chosen word in uppercase, nothing else.
         try:
             client = ollama.Client(host='http://ollama.cs.wallawalla.edu:11434')
             response = client.generate(model='llama3.2', prompt=prompt)
-            # response = ollama.generate(model='deepseek-r1', prompt=prompt)
             full_response = response['response'].strip()
             
             if verbose:
@@ -957,7 +942,7 @@ print("2. Receiving rewards (solved in fewer guesses = better)")
 print("3. Updating their policy to prefer successful actions")
 print("4. Balancing exploration (trying new things) vs exploitation (using what works)\n")
 
-print("Modern LLMs like DeepSeek-R1 have implicitly 'learned' Wordle strategies")
+print("Modern LLMs like llama3.2 have implicitly 'learned' Wordle strategies")
 print("from seeing many examples during training.\n")
 
 # Try to run actual RL simulation if Ollama available
@@ -981,7 +966,7 @@ try:
 except ImportError:
     print("Ollama not available - showing conceptual simulation only.")
     print("Install with: pip install ollama")
-    print("Then run: ollama pull deepseek-r1\n")
+    print("Then run: ollama pull llama3.2\n")
 except Exception as e:
     print(f"Could not connect to Ollama: {e}")
     print("Make sure Ollama is running with: ollama serve\n")
@@ -989,11 +974,11 @@ except Exception as e:
 
 ### Reflection Questions
 
-19. Traditional RL requires millions of training episodes to learn Wordle strategy. Modern LLMs appear to play reasonably well without explicit training on Wordle. What does this suggest about how these models represent and transfer knowledge across different tasks?
+18. Traditional RL requires millions of training episodes to learn Wordle strategy. Modern LLMs appear to play reasonably well without explicit training on Wordle. What does this suggest about how these models represent and transfer knowledge across different tasks?
 
-20. Compare the transparency of the rule-based agents (entropy, minimax) versus the RL/LLM agent. Which approach makes it easier to understand *why* a particular guess was chosen? Discuss the trade-off between interpretability and performance.
+19. Compare the transparency of the rule-based agents (entropy, minimax) versus the RL/LLM agent. Which approach makes it easier to understand *why* a particular guess was chosen? Discuss the trade-off between interpretability and performance.
 
-21. The RL agent needs to balance exploration (trying suboptimal guesses to learn) versus exploitation (using its current best strategy). How do the deterministic agents we built earlier handle this trade-off implicitly through their optimization criteria?
+20. The RL agent needs to balance exploration (trying suboptimal guesses to learn) versus exploitation (using its current best strategy). How do the deterministic agents we built earlier handle this trade-off implicitly through their optimization criteria?
 
 ---
 
@@ -1107,11 +1092,11 @@ analyze_difficult_cases(WORD_LIST)
 
 ### Reflection Questions
 
-22. Words with repeated letters (like "ATONE" with two instances of a vowel) challenge our agents differently. Explain why repeated letters reduce the information gained per guess and how this affects entropy calculations.
+21. Words with repeated letters (like "ATONE" with two instances of a vowel) challenge our agents differently. Explain why repeated letters reduce the information gained per guess and how this affects entropy calculations.
 
-23. When multiple words remain that differ by only one letter (like "STARE", "SCARE", "SPARE"), the game becomes partially luck-based. Discuss how each strategy (frequency, entropy, minimax) handles this degeneracy and whether any approach is fundamentally superior in these cases.
+22. When multiple words remain that differ by only one letter (like "STARE", "SCARE", "SPARE"), the game becomes partially luck-based. Discuss how each strategy (frequency, entropy, minimax) handles this degeneracy and whether any approach is fundamentally superior in these cases.
 
-24. Consider the broader implications: Wordle has a finite, known state space (12,000+ words). How would these strategies need to adapt for a game with an unknown or infinite state space (like Scrabble or real-world decision problems)? What assumptions would break down?
+23. Consider the broader implications: Wordle has a finite, known state space (12,000+ words). How would these strategies need to adapt for a game with an unknown or infinite state space (like Scrabble or real-world decision problems)? What assumptions would break down?
 
 ---
 
@@ -1132,11 +1117,11 @@ Through these exercises, you've observed how different AI paradigms approach the
 
 Create a new **public** Github Repository called `cs430`, upload your local `cs430` folder there including all code from this lab and:
 
-Create `lab_ch6_results.md`:
+Create `lab_wordle_results.md`:
 
 ```markdown
 # Names: Your names here
-# Lab: lab3 (CSP)
+# Lab: lab3 (Wordle)
 # Date: Today's date
 ```
 
@@ -1148,6 +1133,6 @@ Email the GitHub repository web link to me at `chike.abuah@wallawalla.edu`
 
 You can make a **private** Github Repo and add me as a collaborator, my username is `abuach`.
 
-Congrats, you're done with the fourth lab!
+Congrats, you're done with the fifth lab!
 
 ---
