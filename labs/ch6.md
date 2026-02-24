@@ -1608,7 +1608,7 @@ Create `lab_ch6_results.md`:
 
 ```markdown
 # Names: Your names here
-# Lab: lab3 (CSP)
+# Lab: lab4 (CSP)
 # Date: Today's date
 ```
 

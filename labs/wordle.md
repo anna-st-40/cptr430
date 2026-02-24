@@ -1121,7 +1121,7 @@ Create `lab_wordle_results.md`:
 
 ```markdown
 # Names: Your names here
-# Lab: lab3 (Wordle)
+# Lab: lab5 (Wordle)
 # Date: Today's date
 ```
 
