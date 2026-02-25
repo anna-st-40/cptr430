@@ -34,7 +34,7 @@ I suggest running the following commands from your base user directory:
 ```bash
 mkdir cs430 
 cd cs430 
-uv add transformers torch bertviz gensim scikit-learn matplotlib umap-learn captum
+uv add transformers torch bertviz gensim scikit-learn matplotlib umap-learn captum seaborn
 source .venv/bin/activate
 touch nlp.ipynb
 ```
@@ -89,10 +89,13 @@ Run the code and observe the printed attention matrix. Focus on:
 - Which token-to-token pairs have the **highest weights** in layer 0, head 0
 - How the `[CLS]` and `[SEP]` tokens behave compared to content words
 - Any asymmetries (token A attending to B ≠ token B attending to A)
+- Reference the interpretation guide below!
 
 ```python
 from transformers import BertTokenizer, BertModel
 import torch
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 model = BertModel.from_pretrained("bert-base-uncased", output_attentions=True)
@@ -105,26 +108,32 @@ tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
 with torch.no_grad():
     outputs = model(**inputs)
 
-# Shape: (layers=12, heads=12, seq_len, seq_len)
-attentions = outputs.attentions
+layer = 5
+heads = outputs.attentions[layer][0]  # shape: (12, seq_len, seq_len)
 
-# Inspect layer 0, head 0
-layer, head = 0, 0
-attn_matrix = attentions[layer][0][head].numpy()
+fig, axes = plt.subplots(3, 4, figsize=(18, 12))
+axes = axes.flatten()
 
-print("Tokens:", tokens)
-print(f"\nAttention matrix — Layer {layer+1}, Head {head+1}")
-print(f"{'':>12}", end="")
-for t in tokens:
-    print(f"{t:>10}", end="")
-print()
+for head in range(12):
+    attn = heads[head].numpy()
+    sns.heatmap(attn, xticklabels=tokens, yticklabels=tokens,
+                cmap="Blues", vmin=0, vmax=1,
+                ax=axes[head], cbar=False)
+    axes[head].set_title(f"Head {head+1}", fontsize=10)
+    axes[head].tick_params(labelsize=6)
+    axes[head].set_xticklabels(tokens, rotation=45, ha="right")
 
-for i, src in enumerate(tokens):
-    print(f"{src:>12}", end="")
-    for j in range(len(tokens)):
-        print(f"{attn_matrix[i][j]:>10.3f}", end="")
-    print()
+fig.suptitle(f"All 12 Heads — Layer {layer+1}", fontsize=14)
+plt.tight_layout()
+plt.show()
 ```
+
+> **Note!**
+
+#### Reading the heatmap 
+- Each row is a query token, each column is a key token. 
+- A dark cell at row `it`, column `trophy` means `it` attends strongly to `trophy`.
+- Change layers to explore!
 
 ### Reflection Questions
 
@@ -152,6 +161,7 @@ Run the code to produce an interactive `bertviz` visualization. In the widget:
 - Select **Layer 1** and look at all 12 heads — notice how different they are from each other
 - Then switch to **Layer 12** and compare
 - Try clicking individual tokens to highlight their outgoing attention
+- Reference the interpretation guide below!
 
 ```python
 from transformers import BertTokenizer, BertModel
@@ -175,6 +185,31 @@ head_view(outputs.attentions, tokens)
 ```
 
 > **Note:** Run this in a Jupyter notebook for the interactive widget. If running as a script, `bertviz` will emit HTML you can save and open in a browser.
+
+#### `head_view` Visualization
+
+`head_view` renders an **interactive attention visualization** showing how each token attends to every other token across BERT's self-attention layers.
+
+###### Layout
+
+Two vertical lists of tokens — the same sentence on the left and right — connected by colored arcs. **Line thickness** = attention weight strength. **Color** = attention head.
+
+`bert-base-uncased` has **12 layers × 12 heads = 144 total attention patterns**.
+
+##### Controls
+
+| Control | What it does |
+|---|---|
+| **Layer dropdown** | Selects which of the 12 transformer layers to inspect |
+| **Head checkboxes** | Toggle individual heads on/off |
+| **Hover (left)** | Query view — what does this token attend *to*? |
+| **Hover (right)** | Key view — what tokens attend *to* this one? |
+
+##### Interpreting Patterns
+
+- **Thick lines** = strong focused attention
+- **Many thin lines** = diffuse attention (no clear pattern)
+- Lower layers tend to capture syntax; higher layers semantics
 
 ### Reflection Questions
 
