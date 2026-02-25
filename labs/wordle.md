@@ -734,7 +734,7 @@ def run_benchmark(word_list, num_trials=10):
         start_time = time()
         
         for word in test_words:
-            guesses = agent_func(word, word_list, verbose=False)
+            guesses = agent_func(word, word_list, False)
             results[name].append(len(guesses))
         
         elapsed = time() - start_time

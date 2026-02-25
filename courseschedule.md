@@ -34,21 +34,19 @@ The schedule is subject to change at the professional judgement of the instructo
 |      | Thu Feb 12 | CSP Lab Pt3                                      | -                  |
 |      | Fri Feb 13 | Project Day                                      | —                  |
 | 7    | Mon Feb 16 | No Class (Presidents’ Day)                       | —                  |
-|      | Wed Feb 18 | TBD                                              | -                  |
-|      | Thu Feb 19 | TBD                                              | -                  |
+|      | Wed Feb 18 | Wordle Case Study                                | -                  |
+|      | Thu Feb 19 | Wordle Lab                                       | -                  |
 |      | Fri Feb 20 | Project Day                                      | —                  |
-| 8    | Mon Feb 23 | Markov decision processes                        | Ch 17              |
-|      | Wed Feb 25 | Sequential decision making                       | Ch 17              |
-|      | Thu Feb 26 | Reinforcement learning overview                  | Ch 22              |
+| 8    | Mon Feb 23 | Wordle Lab Pt2                                   | —                  |
+|      | Wed Feb 25 | TBD                                              | —                  |
+|      | Thu Feb 26 | TBD                                              | —                  |
 |      | Fri Feb 27 | Project Day                                      | —                  |
-| 9    | Mon Mar 2  | Modern reinforcement learning; alignment context | Ch 22              |
-|      | Wed Mar 4  | Natural language processing (selective topics)   | Ch 23              |
-|      | Thu Mar 5  | Computer vision or additional NLP topics         | Ch 24              |
+| 9    | Mon Mar 2  | TBD                                              | —                  |
+|      | Wed Mar 4  | TBD                                              | —                  |
+|      | Thu Mar 5  | TBD                                              | —                  |
 |      | Fri Mar 6  | Project Day                                      | —                  |
 | 10   | Mon Mar 9  | Project work & integration                       | —                  |
 |      | Wed Mar 11 | Student project presentations                    | —                  |
 |      | Thu Mar 12 | Student project presentations                    | —                  |
 |      | Fri Mar 13 | Course wrap-up & reflection                      | —                  |
 
-
-Backlog: Probability fundamentals; Bayesian networks; Logic and reasoning basics; Inference in probabilistic models
