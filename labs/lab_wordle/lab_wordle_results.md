@@ -2,7 +2,7 @@
 
 # Lab: lab3 (Wordle)
 
-# Date: idk
+# Date: Thursday, February 26th
 
 **Question 1:** In the constraint propagation example, explain the relationship between the pattern encoding and the reduction in state space. How does each piece of information (gray, yellow, green) contribute differently to narrowing possibilities?
 
@@ -67,3 +67,27 @@ Testing on common words would likely improve all agents' performance since those
 **Question 17:** Notice the computational time differences between strategies. In a real-time game where players have limited thinking time, how should we balance solution quality against computation speed? Propose a practical decision rule.
 
 A practical decision rule would be to use the frequency heuristic for the first guess (since it is nearly instant and produces a reasonable opening word), then switch to entropy for subsequent guesses when the remaining word list has been reduced enough to make the entropy computation fast. If at any point the remaining words drop below a small threshold (e.g., 10–20 words), either entropy or minimax can be computed almost instantly, so optimality can be prioritized. This tiered approach ensures we never exceed a time budget while still leveraging stronger strategies when the computation is affordable.
+
+**Question 18:** Traditional RL requires millions of training episodes to learn Wordle strategy. Modern LLMs appear to play reasonably well without explicit training on Wordle. What does this suggest about how these models represent and transfer knowledge across different tasks?
+
+Modern LLMs represent and transfer knowledge across different task due to the context we provide to the LLM. In the code provided, in each attempt we build and update the system prompt to include the attempt number, remaining possible words, the guesses and patterns we have made previously and the sample space.
+
+**Question 19:** Compare the transparency of the rule-based agents (entropy, minimax) versus the RL/LLM agent. Which approach makes it easier to understand why a particular guess was chosen? Discuss the trade-off between interpretability and performance.
+
+Rule-based agents. make it easier to understand why a particular guess was chosen. LLMs serve as kind of a black box in that it just provides an answer, or guess; we can' really know how it got to that, whereas with rule-based agents, the code is there, we have more control over the agent and we can always know what it's doing at every step. Nervertheless, LLM is not necesarily deterministic but it performs better than rule-based agents.
+
+**Question 20:** The RL agent needs to balance exploration (trying suboptimal guesses to learn) versus exploitation (using its current best strategy). How do the deterministic agents we built earlier handle this trade-off implicitly through their optimization criteria?
+
+The deterministic agents we built earlier handle this trade-off because they don't make any guesses outside the remaining seach space, however, they do pick guesses within that search space that maximinzes information learned.
+
+**Question 21:** Words with repeated letters (like "ATONE" with two instances of a vowel) challenge our agents differently. Explain why repeated letters reduce the information gained per guess and how this affects entropy calculations.
+
+Repeated letters reduced information gained because we miss the opportunity to use a different letter and see if that letter belonged to the correct word. This increases entropy because the scenario is more uncertain.
+
+**Question 22:** When multiple words remain that differ by only one letter (like "STARE", "SCARE", "SPARE"), the game becomes partially luck-based. Discuss how each strategy (frequency, entropy, minimax) handles this degeneracy and whether any approach is fundamentally superior in these cases.
+
+Frequency will look at the remaining words, collect the letters by which they differ and choose the word that containst the letter which higher frequency. Entropy will choose the word with higher entropy and minimax will choose the word that minimizes the worst case. In this specific scenario, Minimax will be superior in these cases.
+
+**Question 23:** Consider the broader implications: Wordle has a finite, known state space (12,000+ words). How would these strategies need to adapt for a game with an unknown or infinite state space (like Scrabble or real-world decision problems)? What assumptions would break down?
+
+For some algorithms like minimax that relies on reducing the search spae, we can't do that because the search space is infinite, so have to rely entirely on gaining more information about the search space. Frequency becomes not feasible because it relies on most common letters in words, but it becomes very expensive to look in an infinite space.
