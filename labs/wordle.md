@@ -1092,7 +1092,7 @@ analyze_difficult_cases(WORD_LIST)
 
 ### Reflection Questions
 
-21. Words with repeated letters (like "ATONE" with two instances of a vowel) challenge our agents differently. Explain why repeated letters reduce the information gained per guess and how this affects entropy calculations.
+21. Words with repeated letters (like "APPLE" with two instances of a vowel) challenge our agents differently. Explain why repeated letters reduce the information gained per guess and how this affects entropy calculations.
 
 22. When multiple words remain that differ by only one letter (like "STARE", "SCARE", "SPARE"), the game becomes partially luck-based. Discuss how each strategy (frequency, entropy, minimax) handles this degeneracy and whether any approach is fundamentally superior in these cases.
 
