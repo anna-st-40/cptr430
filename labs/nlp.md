@@ -1,4 +1,4 @@
-# Natural Language Processing: How Models Understand Language Lab
+# Natural Language Processing Lab
 **Reference: Russell & Norvig, *Artificial Intelligence: A Modern Approach*, Chapter 23 (Natural Language Processing)**
 
 ---
@@ -8,17 +8,15 @@
 By the end of this lab, you will be able to:
 
 1. **Identify** how transformer attention mechanisms distribute focus across tokens in a sentence
-2. **Distinguish** how attention patterns evolve across different layers of a neural network
-3. **Explain** how word embeddings encode semantic relationships as geometric structure in vector space
-4. **Classify** whether observed embedding clusters reflect linguistic categories or learned biases
-5. **Analyze** which tokens most influence a model's sentiment classification decision
-6. **Compare** model behavior before and after removing high-salience tokens to evaluate prediction sensitivity
+2. **Explain** how word embeddings encode semantic relationships as geometric structure in vector space
+3. **Classify** whether observed embedding clusters reflect linguistic categories or learned biases
+4. **Analyze** which tokens most influence a model's sentiment classification decision
 
 ---
 
 ## Lab Overview
 
-This lab takes an **observation-first** approach: you will run fully implemented code and study what it reveals about how modern NLP models work internally. Rather than building models from scratch, you'll develop intuitions by watching them in action — visualizing attention, exploring geometric meaning, and probing what drives classification decisions.
+This lab takes an **observation-first** approach; you'll develop intuitions by: visualizing attention, exploring geometric meaning, and probing what drives classification decisions.
 
 **Python 3.10+ is recommended.** Install dependencies before starting:
 
