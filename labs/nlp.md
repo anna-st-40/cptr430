@@ -1,4 +1,4 @@
-# Natural Language Processing Lab
+# Natural Language Processing: How Models Understand Language Lab
 **Reference: Russell & Norvig, *Artificial Intelligence: A Modern Approach*, Chapter 23 (Natural Language Processing)**
 
 ---
@@ -8,15 +8,17 @@
 By the end of this lab, you will be able to:
 
 1. **Identify** how transformer attention mechanisms distribute focus across tokens in a sentence
-2. **Explain** how word embeddings encode semantic relationships as geometric structure in vector space
-3. **Classify** whether observed embedding clusters reflect linguistic categories or learned biases
-4. **Analyze** which tokens most influence a model's sentiment classification decision
+2. **Distinguish** how attention patterns evolve across different layers of a neural network
+3. **Explain** how word embeddings encode semantic relationships as geometric structure in vector space
+4. **Classify** whether observed embedding clusters reflect linguistic categories or learned biases
+5. **Analyze** which tokens most influence a model's sentiment classification decision
+6. **Compare** model behavior before and after removing high-salience tokens to evaluate prediction sensitivity
 
 ---
 
 ## Lab Overview
 
-This lab takes an **observation-first** approach; you'll develop intuitions by: visualizing attention, exploring geometric meaning, and probing what drives classification decisions.
+This lab takes an **observation-first** approach: you will run fully implemented code and study what it reveals about how modern NLP models work internally. Rather than building models from scratch, you'll develop intuitions by watching them in action — visualizing attention, exploring geometric meaning, and probing what drives classification decisions.
 
 **Python 3.10+ is recommended.** Install dependencies before starting:
 
@@ -213,9 +215,9 @@ Two vertical lists of tokens — the same sentence on the left and right — con
 
 **Q4.** After exploring multiple heads in layer 1, describe two heads that appear to capture qualitatively different relationships. What linguistic patterns do you think each is tracking, and what evidence in the visualization supports your interpretation?
 
-**Q5.** Compare the overall "texture" of attention in layer 1 vs. layer 12. In which layer do attention patterns look more diffuse (spread across many tokens) vs. more focused? What might this difference tell us about the progression from syntactic to semantic processing?
+**Q5.** Compare the overall "texture" of attention in layer 1 vs. layer 8 vs. layer 12. In which layer do attention patterns look more diffuse (spread across many tokens) vs. more focused? What might this difference tell us about the progression from syntactic to semantic processing?
 
-**Q6.** AIMA describes intelligence as the ability to act appropriately given incomplete information. In what sense does multi-head attention allow a model to handle ambiguity — like the ambiguous "it" in our sentence — better than a single attention head would?
+**Q6.** The AIMA book describes intelligence as the ability to act appropriately given incomplete information. In what sense does multi-head attention allow a model to handle ambiguity — like the ambiguous "it" in our sentence — better than a single attention head would?
 
 ---
 
@@ -357,9 +359,7 @@ print("Saved: embeddings_pca.png")
 
 **Q10.** Describe the spatial organization of the three word clusters in your plot. Are they clearly separated, or do any categories overlap? Which two categories are most geometrically similar to each other, and why might that be?
 
-**Q11.** PCA can only retain a small fraction of the original 100-dimensional variance in 2D. Looking at the axis labels showing explained variance percentages, what proportion of information is lost in this projection? How should this limitation affect your confidence in conclusions drawn from the 2D plot?
-
-**Q12.** The distributional hypothesis underpins word embeddings: words are similar if they appear in similar contexts. Can you think of a pair of words that would be **incorrectly** placed near each other by this principle (false semantic neighbor), or a pair **incorrectly** placed far apart (false semantic distance)? What does this suggest about the limits of corpus-based meaning?
+**Q11.** The distributional hypothesis underpins word embeddings: words are similar if they appear in similar contexts. Can you think of a pair of words that would be **incorrectly** placed near each other by this principle (false semantic neighbor), or a pair **incorrectly** placed far apart (false semantic distance)? What does this suggest about the limits of corpus-based meaning?
 
 ---
 
@@ -433,11 +433,9 @@ for prof in professions:
 
 ### Reflection Questions
 
-**Q13.** For the analogy `man:king :: woman:?`, did the model return "queen" as the top answer? Look at the full top-5 list — are the other answers plausible or surprising? What does this tell you about what the model has actually learned vs. what we might hope it learns?
+**Q12.** For the analogy `man:king :: woman:?`, did the model return "queen" as the top answer? Look at the full top-5 list — are the other answers plausible or surprising? What does this tell you about what the model has actually learned vs. what we might hope it learns?
 
-**Q14.** In the bias probe, which professions are most strongly associated with "man," and which with "woman"? Do these associations reflect linguistic reality (how these words actually co-occur in text) or social stereotypes — or both? Why is it difficult to separate the two?
-
-**Q15.** One proposed debiasing approach projects word vectors onto a "gender direction" and subtracts that component. What benefits and potential costs might you anticipate? Consider downstream applications (search, autocomplete) and whether "erasing" bias is the same as "fixing" it.
+**Q13.** In the bias probe, which professions are most strongly associated with "man," and which with "woman"? Do these associations reflect linguistic reality (how these words actually co-occur in text) or social stereotypes — or both? Why is it difficult to separate the two?
 
 ---
 
@@ -496,11 +494,9 @@ for tok, sal in zip(tokens, saliency):
 
 ### Reflection Questions
 
-**Q16.** List the three tokens with the highest saliency scores. Are they the words you would intuitively consider most important for determining sentiment? If there are surprises (e.g., punctuation or function words scoring high), propose a hypothesis for why the model might be sensitive to them.
+**Q14.** List the three tokens with the highest saliency scores. Are they the words you would intuitively consider most important for determining sentiment? If there are surprises (e.g., punctuation or function words scoring high), propose a hypothesis for why the model might be sensitive to them.
 
-**Q17.** This sentence contains both positive ("brilliant") and negative ("disaster") sentiment words. Which scores higher in saliency? What does this tell you about how the model balances conflicting sentiment signals, and does it match the model's final prediction?
-
-**Q18.** Gradient saliency tells us where the model is *sensitive*, not necessarily what it has *learned*. Describe a scenario where a token could have high saliency for the wrong reason — a spurious correlation from training data rather than genuine semantic understanding.
+**Q15.** This sentence contains both positive ("brilliant") and negative ("disaster") sentiment words. Which scores higher in saliency? What does this tell you about how the model balances conflicting sentiment signals, and does it match the model's final prediction?
 
 ---
 
@@ -562,13 +558,82 @@ for word, note in targets:
 
 ### Reflection Questions
 
-**Q19.** Which masked word caused the largest drop in confidence? Did any masking cause the predicted label to flip? What do these results tell you about the relative causal importance of different tokens compared to what saliency scores alone predicted?
+**Q16.** Which masked word caused the largest drop in confidence? Did any masking cause the predicted label to flip? What do these results tell you about the relative causal importance of different tokens compared to what saliency scores alone predicted?
 
-**Q20.** Masking "was" likely had little effect on the prediction, yet some function words may have had non-trivial saliency scores in Exercise 6. How do you reconcile these two findings? What does this suggest about the difference between *gradient sensitivity* and *causal importance*?
-
-**Q21.** Consider the limitations of both saliency maps and perturbation tests as tools for understanding model behavior. What would a truly rigorous interpretability evaluation require, and why is NLP interpretability considered an open research problem rather than a solved one?
+**Q17.** Masking "was" likely had little effect on the prediction, yet some function words may have had non-trivial saliency scores in Exercise 6. How do you reconcile these two findings? What does this suggest about the difference between *gradient sensitivity* and *causal importance*?
 
 ---
+
+## Exercise 8: Counterfactual Pairs — Measuring Minimum Semantic Change
+
+### Description
+
+This exercise explores using **counterfactual pairs** — minimal edits to a sentence that change its label and nothing else. By comparing the model's response to these controlled changes, you can isolate exactly which word or phrase is doing the predictive work, connecting interpretability to causal reasoning.
+
+### Key Concepts
+
+- **Counterfactual**: A hypothetical input where one variable is changed while everything else is held constant — the "what if?" question
+- **Minimum edit distance**: The smallest number of token changes needed to flip a model's prediction
+- **Causal attribution**: Identifying which input features *cause* an output rather than merely correlating with it
+- **Contrast set**: A dataset of original examples paired with minimal counterfactuals, designed to evaluate true model understanding vs. pattern matching
+- **Decision boundary**: The threshold in the model's learned representation space that separates classes; counterfactuals probe exactly where this boundary lies
+
+### Task
+
+Run the code and observe the side-by-side prediction table. Focus on:
+- The confidence change for minimal one-word edits
+- Whether the model is more sensitive to sentiment words or to structural changes like negation
+- Any pairs where the model's behavior surprises you
+
+```python
+from transformers import pipeline
+
+classifier = pipeline("sentiment-analysis",
+                      model="distilbert-base-uncased-finetuned-sst-2-english")
+
+# (original, counterfactual, type_of_change)
+pairs = [
+    ("The food was excellent.",            "The food was terrible.",             "excellent→terrible"),
+    ("The food was excellent.",            "The food was not excellent.",         "add 'not'"),
+    ("I really loved this experience.",    "I really hated this experience.",     "loved→hated"),
+    ("The movie was surprisingly good.",   "The movie was surprisingly bad.",     "good→bad"),
+    ("I can't say I didn't enjoy it.",     "I can't say I enjoyed it.",           "remove 'didn't'"),
+    ("She gave a brilliant performance.",  "She gave a mediocre performance.",    "brilliant→mediocre"),
+    ("She gave a brilliant performance.",  "She gave a performance.",             "remove adjective"),
+    ("It wasn't the worst film I've seen.","It was the worst film I've seen.",    "wasn't→was"),
+    ("A masterpiece of modern cinema.",    "A disappointment of modern cinema.",  "masterpiece→disappointment"),
+    ("The ending left me feeling hopeful.","The ending left me feeling empty.",   "hopeful→empty"),
+]
+
+print(f"{'Original':>42}  {'Edit':>24}  {'Orig':>8}  {'CF':>8}  {'ΔConf':>7}")
+print("-" * 100)
+
+for original, cf, edit_type in pairs:
+    r_o  = classifier(original)[0]
+    r_cf = classifier(cf)[0]
+    delta = r_cf["score"] - r_o["score"]
+    flip  = " ←FLIP" if r_o["label"] != r_cf["label"] else ""
+    print(f"  {original[:40]:>40}  {edit_type:>24}  "
+          f"{r_o['label']:>8}  {r_cf['label']:>8}  {delta:>+7.3f}{flip}")
+
+print("\nNegation cases — detailed:")
+for original, cf, edit_type in pairs:
+    if any(w in edit_type for w in ["not", "didn't", "wasn't"]):
+        r_o  = classifier(original)[0]
+        r_cf = classifier(cf)[0]
+        print(f"\n  Edit: {edit_type}")
+        print(f"    Original      : \"{original}\" → {r_o['label']} ({r_o['score']:.3f})")
+        print(f"    Counterfactual: \"{cf}\" → {r_cf['label']} ({r_cf['score']:.3f})")
+```
+
+### Reflection Questions
+
+**Q18.** For the pairs where adding or removing "not" changes the label, is the confidence shift large or small compared to swapping a positive word for a negative one (e.g., "excellent" → "terrible")? What does the relative magnitude of these confidence changes reveal about how the model weights negation versus lexical sentiment signal?
+
+**Q19.** The pair "She gave a brilliant performance." vs. "She gave a performance." removes the adjective entirely. Does the model's prediction change meaningfully? What does this reveal about whether the model is classifying based on the presence of sentiment-bearing adjectives or on a more holistic sentence-level representation?
+
+---
+
 
 ## Summary and Key Takeaways
 
@@ -579,8 +644,6 @@ This lab explored three complementary windows into how modern NLP models process
 **Word Embeddings (Exercises 4–5)** demonstrated that meaning can be encoded geometrically: semantic categories cluster together, and relationships like gender or nationality become consistent directional offsets. This elegant structure also faithfully reflects human biases in training text, raising the important distinction between a model that has learned language statistics vs. one that has learned truth.
 
 **Gradient Saliency and Perturbation (Exercises 6–7)** showed that we can interrogate model decisions by asking which inputs drive the output most strongly — and then test those claims empirically by removing tokens. The gap between correlational saliency and causal perturbation results is a recurring theme in interpretability research, reminding us that attribution is difficult even when we have full access to model internals.
-
-Together, these exercises illustrate a key tension in modern AI: these systems are extraordinarily capable at language tasks, yet their internal representations remain only partially understood. Interpretability matters for trust, debugging, bias detection, and deploying AI responsibly.
 
 ---
 
