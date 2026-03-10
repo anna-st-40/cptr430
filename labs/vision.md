@@ -1,4 +1,4 @@
-# Computer Vision: Inside the Black Box Lab
+# Computer Vision Lab
 **Inspired by Russell & Norvig, *Artificial Intelligence: A Modern Approach*, Ch. 25 — Computer Vision**
 
 ---
@@ -11,7 +11,7 @@ By the end of this lab, you will be able to:
 2. **Distinguish** between early-layer and late-layer feature representations in a CNN
 3. **Explain** how gradient-based attribution (Grad-CAM) reveals which image regions drive model decisions
 4. **Analyze** the relationship between a model's attention and its classification reasoning
-5. **Evaluate** the implications for real-world AI deployment
+5. **Consider** implications for real-world AI deployment
 
 ---
 
