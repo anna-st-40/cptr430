@@ -17,7 +17,7 @@ By the end of this lab, you will be able to:
 
 ## Lab Overview
 
-This lab takes you inside a trained convolutional neural network — not to build one, but to *see* what it has learned. You will run three progressively revealing experiments:
+This lab takes you inside a trained convolutional neural network to *see* what it has learned. You will run three progressively revealing experiments:
 
 - **Exercise 1–3**: Visualizing CNN feature maps across layers to observe hierarchical feature learning
 - **Exercise 4–5**: Using Grad-CAM heatmaps to understand where the model "looks" when making predictions
