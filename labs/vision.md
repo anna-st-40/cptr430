@@ -151,7 +151,7 @@ model.layer1.register_forward_hook(save_output("layer1"))
 
 # --- Load and preprocess an image ---
 # Wikimedia requires a User-Agent header or it returns a non-image error page
-url = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Cute_dog.jpg/320px-Cute_dog.jpg"
+url = "https://upload.wikimedia.org/wikipedia/commons/3/37/Oryctolagus_cuniculus_Tasmania_2.jpg"
 headers = {"User-Agent": "Mozilla/5.0 (cv-lab-student-project)"}
 img = Image.open(BytesIO(requests.get(url, headers=headers).content)).convert("RGB")
 
